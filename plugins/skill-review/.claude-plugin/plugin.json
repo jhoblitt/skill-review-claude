@@ -1,0 +1,21 @@
+{
+  "name": "skill-review",
+  "displayName": "Skill Review",
+  "version": "0.0.0",
+  "description": "Duplication and drift gate for Claude Code skill, agent, and plugin prose: the one-normative-home rule, a pre-PR gate over instruction diffs, and repo-wide instruction audits",
+  "author": {
+    "name": "Joshua Hoblitt",
+    "email": "josh@hoblitt.com",
+    "url": "https://github.com/jhoblitt"
+  },
+  "homepage": "https://github.com/jhoblitt/skill-review-claude",
+  "repository": "https://github.com/jhoblitt/skill-review-claude",
+  "license": "Apache-2.0",
+  "keywords": [
+    "skills",
+    "plugins",
+    "prompt-engineering",
+    "code-review",
+    "lint"
+  ]
+}

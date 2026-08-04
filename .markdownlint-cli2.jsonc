@@ -1,0 +1,18 @@
+{
+  // Lint everything except the plain-text LICENSE and the
+  // semantic-release-generated CHANGELOG.
+  "globs": ["**/*.md", "!CHANGELOG.md"],
+  "config": {
+    // Skill prose is deliberately dense: long lines, tight
+    // lists/headings/fences, <placeholder> tokens, and frontmatter
+    // files with no H1.
+    "MD013": false,
+    "MD022": false,
+    "MD029": false,
+    "MD031": false,
+    "MD032": false,
+    "MD033": false,
+    "MD041": false,
+    "MD046": false
+  }
+}
