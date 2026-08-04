@@ -1,0 +1,18 @@
+{
+  "name": "skill-review-claude",
+  "description": "Claude Code plugins for skill and plugin authors: a duplication and drift gate that reviews skill, agent, and canon prose the way a maintainer reviews code",
+  "owner": {
+    "name": "Joshua Hoblitt",
+    "url": "https://github.com/jhoblitt"
+  },
+  "plugins": [
+    {
+      "name": "skill-review",
+      "source": "./plugins/skill-review",
+      "description": "Duplication and drift gate for Claude Code skill, agent, and plugin prose: the one-normative-home rule, a pre-PR gate procedure over instruction diffs, and repo-wide instruction audits",
+      "author": {
+        "name": "Joshua Hoblitt"
+      }
+    }
+  ]
+}

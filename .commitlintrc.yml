@@ -1,0 +1,7 @@
+extends:
+  - "@commitlint/config-conventional"
+
+rules:
+  # Dependabot bodies carry compare URLs longer than 100 chars, and the
+  # commitlint bundled in the wagoid action (19.x) has no URL exemption.
+  body-max-line-length: [0, always]
