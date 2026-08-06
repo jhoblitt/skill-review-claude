@@ -21,6 +21,10 @@ Both axes run under one contract:
 - **Modes.** Gate a branch or PR diff before it opens · review a
   single artifact on request · audit a whole repo. Both axes run in
   every mode.
+- **Batch independent work.** Where a step's items are independent
+  and read-only, dispatch them as ONE batch rather than a serial
+  sweep, and gather before the next step. Cap batch width at what
+  the harness runs concurrently; queue the rest.
 - **Verify before reporting.** Re-read each candidate assuming the
   author was right — transport mappings, per-audience deltas, scoped
   exceptions, and deliberately serial work are all legitimate. Report
@@ -59,9 +63,11 @@ silently. Corollaries:
 1. **Rule census.** From the diff, list every rule, contract field,
    threshold, vocabulary token, and procedure step the change adds,
    edits, or moves.
-2. **Rendering hunt.** For each, search the WHOLE repo for its other
-   renderings — by distinctive phrases, numbers, and token names, not
-   exact strings: drifted copies no longer match exactly.
+2. **Rendering hunt.** Dispatch the hunts as one batch per the
+   shared contract — one searcher per rule or rule-batch, each
+   applying step 3 to what it finds. Each searches the WHOLE repo
+   by distinctive phrases, numbers, and token names, not exact
+   strings: drifted copies no longer match exactly.
 3. **Classify every rendering**: NORMATIVE (the one home) · POINTER
    (names rule and home, no re-explanation) · RESTATED (re-explains —
    a finding) · DRIFTED (contradicts another rendering — a finding
@@ -112,10 +118,12 @@ are the SAME defect — shape mismatched to dependencies. Corollaries:
 ### Concurrency procedure
 
 1. **Work-item census** over the FULL text of each artifact, never the
-   diff hunk — a procedure's shape is invisible in a hunk. List every
-   step that operates over a set (files, modules, findings, PRs,
-   review dimensions, candidate designs, test cases), its expected
-   size, and whether the artifact bounds it.
+   diff hunk — a procedure's shape is invisible in a hunk. Dispatch
+   the censuses as one batch per the shared contract, one artifact
+   each. Each lists every step that operates over a set (files,
+   modules, findings, PRs, review dimensions, candidate designs,
+   test cases), its expected size, and whether the artifact bounds
+   it.
 2. **Independence test** per set: shared mutable state? item N
    consuming item N−1's output? order affecting the result? Record the
    verdict AND the evidence. A set whose independence you cannot
