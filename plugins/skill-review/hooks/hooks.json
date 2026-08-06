@@ -1,0 +1,17 @@
+{
+  "description": "Runs the skill-review axes before a pull request that changes instruction prose is opened. Silent and free on every other Bash call.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/pr-gate.sh\"",
+            "timeout": 240
+          }
+        ]
+      }
+    ]
+  }
+}
