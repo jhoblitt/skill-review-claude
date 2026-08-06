@@ -29,6 +29,9 @@ jobs:
           claude plugin validate .
           claude plugin validate plugins/skill-review
 
+      - name: Test the PR gate hook
+        run: tests/pr-gate-test.sh
+
       - name: markdownlint
         run: npx --yes markdownlint-cli2@0.18.1
 
