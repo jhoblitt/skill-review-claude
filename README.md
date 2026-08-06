@@ -74,6 +74,33 @@ not judge meaning, triggering quality, or coverage; compose it with a
 content reviewer for those. Findings are reported, never auto-fixed, and
 any finding on any axis blocks the verdict.
 
+## Automatic gate
+
+The plugin ships a `PreToolUse` hook that runs the gate before
+`gh pr create` — but only when the branch actually changes instruction
+prose. Everything else exits in about 4 ms of shell, with no model
+involvement and no tokens spent.
+
+It fires when the diff against the base branch touches a `SKILL.md`, a
+`CLAUDE.md` or `AGENTS.md`, anything under `agents/`, `commands/`, or
+`references/`, or a `.claude-plugin/*.json` manifest. When it does fire,
+the review runs in a separate `claude -p` process restricted to
+read-only tools, so your session receives the verdict rather than the
+whole review. `NOT READY` blocks the command and reports the findings;
+`READY` is silent.
+
+The gate fails open. A missing `claude` or `jq`, a timeout, an
+undiscoverable base branch, or any other surprise lets the PR through —
+a broken gate must never block work.
+
+| variable | effect |
+| --- | --- |
+| `SKILL_REVIEW_GATE=off` | skip the gate for that command |
+| `SKILL_REVIEW_GATE_TIMEOUT` | seconds before the review gives up (default 180) |
+
+Hooks load at session start, so run `/reload-plugins` or restart after
+installing or updating.
+
 ## Development
 
 Validate after changes:
