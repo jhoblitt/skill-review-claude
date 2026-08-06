@@ -26,12 +26,11 @@ silently. Corollaries:
    threshold, vocabulary token, and procedure step the change adds,
    edits, or moves.
 2. **Rendering hunt.** Dispatch the hunts as one batch per the
-   shared contract — one pipeline per rule or rule-batch, no barrier
-   between them. Stage one searches the WHOLE repo by distinctive
-   phrases, numbers, and token names, not exact strings: drifted
-   copies no longer match exactly. Stage two applies step 3 to what
-   stage one found. Tier the stages apart: mechanical search cheap,
-   classification at full capability.
+   shared contract — one pipeline per rule or rule-batch. Stage one
+   searches the WHOLE repo by distinctive phrases, numbers, and token
+   names, not exact strings: drifted copies no longer match exactly.
+   Stage two applies step 3 to what stage one found. Tier the stages
+   apart: mechanical search cheap, classification at full capability.
 3. **Classify every rendering**: NORMATIVE (the one home) · POINTER
    (names rule and home, no re-explanation) · RESTATED (re-explains —
    a finding) · DRIFTED (contradicts another rendering — a finding

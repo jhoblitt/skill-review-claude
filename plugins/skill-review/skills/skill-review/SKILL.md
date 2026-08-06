@@ -39,7 +39,8 @@ Every axis runs under one contract:
   runs in every mode.
 - **Batch independent work.** Where a step's items are independent
   and read-only, dispatch them as ONE batch rather than a serial
-  sweep, and gather before the next step. Cap batch width at what
+  sweep, and pipeline each result into the next step. Gather only
+  where the next step needs the whole set. Cap batch width at what
   the harness runs concurrently; queue the rest.
 - **Verify before reporting.** Re-read each candidate assuming the
   author was right — transport mappings, per-audience deltas, scoped
