@@ -1,9 +1,9 @@
 ---
 name: skill-review
-description: Use when reviewing or gating changes to Claude Code skills, agents, plugins, or marketplace repos — a pre-PR gate on prompt prose across three axes, structure (rules restated, pointers drifted, no normative home), shape (procedures that serialize independent work, or fan out unsafely via subagents, workflows, or pipelines), and cost (wrong model tier for a supervisor or worker, work a shipped script should do, prose billed on every trigger); reviewing a single SKILL.md, agent definition, or canon file on any axis; or auditing a whole plugin repo.
+description: Use when reviewing or gating changes to Claude Code skills, agents, plugins, or marketplace repos — a pre-PR gate on prompt prose across three axes, drift (rules restated, pointers stale, no normative home), concurrency (procedures that serialize independent work, or fan out unsafely via subagents, workflows, or pipelines), and token usage (wrong model tier for a supervisor or worker, work a shipped script should do, prose billed on every trigger); reviewing a single SKILL.md, agent definition, or canon file on any axis; or auditing a whole plugin repo.
 ---
 
-# Skill review — structure, shape, and cost gate for prompt prose
+# Skill review — drift, concurrency, and token-usage gate for prompt prose
 
 Instruction files fail in three ways code does not. A rule restated in
 two places reads fine in both until one of them moves. A procedure
@@ -18,16 +18,17 @@ prose the way a maintainer reviews code, on three axes.
 Load only the axes the request calls for. Paths are relative to this
 skill's directory.
 
-- **structure** — is every rule stated exactly once? →
+- **drift** — is every rule stated exactly once? →
   `references/drift.md`
-- **shape** — does the control flow match the dependencies? →
+- **concurrency** — does the control flow match the dependencies? →
   `references/concurrency.md`
-- **cost** — is every operation on the cheapest sufficient mechanism?
-  → `references/token-usage.md`
+- **token usage** — is every operation on the cheapest sufficient
+  mechanism? → `references/token-usage.md`
 
 A pre-PR gate or a repo-wide audit runs all three. A targeted request
-loads one: "is this rule stated anywhere else?" is structure, "does
-this parallelize?" is shape, "is this wasting tokens?" is cost.
+loads one: "is this rule stated anywhere else?" is drift, "does this
+parallelize?" is concurrency, "is this wasting tokens?" is token
+usage.
 
 ## Shared review contract
 
@@ -54,10 +55,10 @@ Every axis runs under one contract:
 - **Report, never fix** — unless the user asks.
 - **Verdict: READY / NOT READY** + the must-fix list. Any finding on
   any axis blocks.
-- **Scope: structure, shape, and cost only** — how rules are stated,
-  how work is dispatched, and what it costs to run. This gate does not
-  judge meaning, triggering quality, or coverage; compose it with a
-  content reviewer for those.
+- **Scope: drift, concurrency, and token usage only** — how rules are
+  stated, how work is dispatched, and what it costs to run. This gate
+  does not judge meaning, triggering quality, or coverage; compose it
+  with a content reviewer for those.
 
 ## Repo-wide audit
 
