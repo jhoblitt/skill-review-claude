@@ -2,7 +2,7 @@
   "name": "skill-review",
   "displayName": "Skill Review",
   "version": "0.2.0",
-  "description": "Duplication and drift gate for Claude Code skill, agent, and plugin prose: the one-normative-home rule, a pre-PR gate over instruction diffs, and repo-wide instruction audits",
+  "description": "Two-axis review gate for Claude Code skill, agent, and plugin prose: the one-normative-home rule against duplication and drift, the shape-matches-the-work rule against mis-dispatched concurrency, a pre-PR gate over instruction diffs, and repo-wide audits",
   "author": {
     "name": "Joshua Hoblitt",
     "email": "josh@hoblitt.com",
@@ -16,6 +16,8 @@
     "plugins",
     "prompt-engineering",
     "code-review",
-    "lint"
+    "lint",
+    "concurrency",
+    "subagents"
   ]
 }
