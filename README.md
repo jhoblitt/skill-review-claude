@@ -5,19 +5,20 @@ for skill and plugin authors. One plugin, `skill-review`, carrying a
 three-axis review gate for instruction prose: skills, agents, canon and
 reference files, marketplace repos.
 
-Instruction files fail in three ways code does not. A rule restated in
-two places reads fine in both until one moves — the **structure** axis
-enforces the one-normative-home rule and hunts restated, drifted, and
-orphaned renderings. A procedure that walks independent work one item at
-a time reads fine too — the **shape** axis checks that control flow
-matches dependencies, flagging serialized independent work as readily as
-unsafe fan-out via subagents, workflows, and pipelines. And a procedure
-that spends a frontier model on what a script could do reads fine
-forever — the **cost** axis holds every operation to the cheapest
-mechanism that can do it correctly, from supervisor model tier down to
-the prose billed on every trigger. All three run across a diff or a
-whole repo and report maintainer-grade findings with full repo-relative
-anchors.
+Instruction files fail in three ways code does not, and each axis
+enforces one rule against one of them:
+
+| axis | rule | what it catches |
+| --- | --- | --- |
+| **drift** | every rule has exactly one normative statement; every other mention is a pointer to it | a rule restated in a second place, two renderings that have drifted apart, a pointer whose target moved, a new rule with no normative home |
+| **concurrency** | a procedure's control flow matches the dependency structure of the work it describes | independent work walked one item at a time, subagents spread across turns so they run serially anyway, a collect-all barrier that earns nothing — and unsafe fan-out: parallel writers without isolation, order-dependent work, unbounded sets with no cap |
+| **token usage** | every operation runs on the cheapest mechanism that can do it correctly | a supervisor tiered below the decisions it must make, mechanical work on a frontier model, code the skill could ship but makes an agent rewrite, prose billed on every trigger that only some invocations need |
+
+Every one of these reads fine on the page — a restatement fails only
+once a copy moves, and prose carries no price tag at all — which is why
+they survive the reviews code gets. All three axes run across a diff or
+a whole repo and report maintainer-grade findings with full
+repo-relative anchors.
 
 ## Install
 
@@ -67,12 +68,12 @@ index; it does not update the installed plugin.
 
 ## Scope
 
-The gate reports structure, shape, and cost findings — restated,
-drifted, orphaned, and homeless rules; serialized or unsafe concurrency;
-and operations running on a costlier mechanism than they need. It does
-not judge meaning, triggering quality, or coverage; compose it with a
-content reviewer for those. Findings are reported, never auto-fixed, and
-any finding on any axis blocks the verdict.
+The gate reports drift, concurrency, and token-usage findings —
+restated, drifted, orphaned, and homeless rules; serialized or unsafe
+fan-out; and operations running on a costlier mechanism than they need.
+It does not judge meaning, triggering quality, or coverage; compose it
+with a content reviewer for those. Findings are reported, never
+auto-fixed, and any finding on any axis blocks the verdict.
 
 ## Automatic gate
 
