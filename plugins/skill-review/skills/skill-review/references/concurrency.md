@@ -1,8 +1,12 @@
 # Axis 2 — concurrency
 
 Runs under the shared review contract in `SKILL.md`, which owns modes,
-batching, verification, anchoring, one-finding-per-site, the verdict,
-and the scope boundary.
+batching, verification, anchoring, one-finding-per-site,
+evidence-or-silence, the verdict, and the scope boundary.
+
+This axis judges whether a shape is CORRECT for the dependencies. What
+that shape costs — orchestration weight, agent count, model tier,
+sizing levers — belongs to `references/token-usage.md`.
 
 ## The shape-matches-the-work rule
 
@@ -23,8 +27,6 @@ are the SAME defect — shape mismatched to dependencies. Corollaries:
   map, or filter is not a barrier.
 - Batching is part of the shape. Subagents dispatched across turns run
   serially whatever the prose intends.
-- Orchestration weight is part of the shape. A fleet for two lookups
-  is as wrong as a serial loop over fifty.
 
 ## Procedure
 
@@ -44,13 +46,9 @@ are the SAME defect — shape mismatched to dependencies. Corollaries:
    fan-out · pipeline · barrier · workflow. A mismatch is a candidate.
 4. **Safety pass** over every prescribed fan-out: writers need
    isolation or disjoint paths, order-dependent work must not fan out,
-   unbounded sets need a stated cap.
-5. **Sizing pass**: agent count against independent parts, deliberate
-   per-agent model choice, orchestration weight against the work, the
-   explicit user opt-in Workflow-class orchestration requires, and
-   whether the artifact lets the executor scale fan-out to the
-   situation.
-6. **Closure pass.** Every fan-out has a gather step that reconciles
+   unbounded sets need a stated cap, and Workflow-class orchestration
+   needs the explicit user opt-in it requires.
+5. **Closure pass.** Every fan-out has a gather step that reconciles
    results.
 
 Then verify per the shared review contract.
@@ -66,15 +64,8 @@ requires).
 Missed concurrency: **SERIAL** (provably independent items walked one
 at a time) · **DISPATCH** (subagents spread across turns instead of
 one message, so they run serially anyway) · **BARRIER** (collect-all
-where each item could flow through its stages independently).
-
-Sizing: **HEAVY** (orchestration heavier than the work) ·
-**OVERSIZED** (more agents than independent parts) · **UNTIERED** (no
-deliberate model choice where subtask difficulty plainly differs) ·
-**COSTBLIND** (cost scales with input, executor given no lever to size
-it) · **NOSYNTH** (fan-out with no gather step). UNCAPPED is width the
-artifact never bounds; COSTBLIND is a bounded fan-out with no lever to
-size down — where both apply, UNCAPPED wins.
+where each item could flow through its stages independently) ·
+**NOSYNTH** (fan-out with no gather step).
 
 ```text
 <file:line> — <step>: <TYPE>
@@ -84,5 +75,5 @@ size down — where both apply, UNCAPPED wins.
   fix: <one line>
 ```
 
-The `items:` line is mandatory: a finding that cannot name its set and
-its independence evidence does not clear the bar and is not reported.
+The `items:` line is this axis's evidence bar: a finding that cannot
+name its set and its independence evidence is not reported.

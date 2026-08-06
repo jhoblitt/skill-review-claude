@@ -1,8 +1,8 @@
 # Axis 1 — duplication and drift
 
 Runs under the shared review contract in `SKILL.md`, which owns modes,
-batching, verification, anchoring, one-finding-per-site, the verdict,
-and the scope boundary.
+batching, verification, anchoring, one-finding-per-site,
+evidence-or-silence, the verdict, and the scope boundary.
 
 ## The one-normative-home rule
 
@@ -52,3 +52,8 @@ Then verify per the shared review contract.
   normative home: <where the one statement should live>
   fix: <one line — usually "keep one, point the rest">
 ```
+
+The `renderings:` line is this axis's evidence bar. RESTATED, DRIFTED,
+and ORPHANED each require at least one other rendering named by full
+path; HOMELESS requires the search that found none. A finding that
+cannot cite the other side is not reported.
