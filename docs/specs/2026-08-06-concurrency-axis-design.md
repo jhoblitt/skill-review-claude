@@ -1,11 +1,11 @@
 # Design — concurrency review axis
 
-**Status:** accepted, 2026-08-06. **Non-normative.** This is a dated
-record of why the concurrency axis is shaped the way it is. The live
-rules live in
-`plugins/skill-review/skills/skill-review/SKILL.md`; when this
-document and that skill disagree, the skill wins and this document is
-stale history, not a finding.
+**Status:** accepted, 2026-08-06. **Non-normative.** A dated record of
+why the concurrency axis is shaped the way it is. The live rules live
+in `plugins/skill-review/skills/skill-review/` — the shared contract in
+`SKILL.md`, this axis in `references/concurrency.md`. When this
+document and those disagree, they win and this is stale history, not a
+finding.
 
 ## Problem
 

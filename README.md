@@ -83,12 +83,12 @@ prose. Everything else exits in about 4 ms of shell, with no model
 involvement and no tokens spent.
 
 It fires when the diff against the base branch touches a `SKILL.md`, a
-`CLAUDE.md` or `AGENTS.md`, anything under `agents/`, `commands/`, or
-`references/`, or a `.claude-plugin/*.json` manifest. When it does fire,
-the review runs in a separate `claude -p` process restricted to
-read-only tools, so your session receives the verdict rather than the
-whole review. `NOT READY` blocks the command and reports the findings;
-`READY` is silent.
+`CLAUDE.md` or `AGENTS.md`, an `.md` file directly inside `agents/`,
+`commands/`, or `references/`, or a `.claude-plugin/*.json` manifest.
+When it does fire, the review runs in a separate `claude -p` process
+restricted to read-only tools, so your session receives the verdict
+rather than the whole review. `NOT READY` blocks the command and
+reports the findings; `READY` is silent.
 
 The gate fails open. A missing `claude` or `jq`, a timeout, an
 undiscoverable base branch, or any other surprise lets the PR through —
