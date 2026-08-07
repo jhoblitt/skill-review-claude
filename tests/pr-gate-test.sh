@@ -439,5 +439,42 @@ else
   ok "an under-cap diff carries no truncation notice"
 fi
 
+# Why observations can only arrive on the READY path, and why systemMessage
+# rather than stderr, is in pr-gate.sh beside the branch that does it.
+obs_bin="$WORK/bin-obs"
+mkdir -p "$obs_bin"
+cat >"$obs_bin/claude" <<'STUB'
+#!/usr/bin/env bash
+cat >/dev/null
+printf '## Axis 1 — duplication and drift\n\nNo survivors.\n\n'
+printf '## Observations\n\n- a note that does not block\n\n'
+printf 'VERDICT: READY\n'
+STUB
+chmod +x "$obs_bin/claude"
+
+emitted=$(printf '%s' "$(payload Bash 'gh pr create' "$prose")" |
+  env -u SKILL_REVIEW_GATE -u SKILL_REVIEW_GATE_ACTIVE \
+    PATH="$obs_bin:/usr/bin:/bin" CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT" \
+    bash "$GATE" 2>/dev/null)
+code=$?
+if [ "$code" -eq 0 ] &&
+  printf '%s' "$emitted" | jq -e '.systemMessage | contains("does not block")' >/dev/null 2>&1; then
+  ok "a READY review's observations are handed on, not dropped"
+else
+  no "a READY review's observations are handed on, not dropped" \
+    "exit $code, stdout was: ${emitted:-<empty>}"
+fi
+
+# A clean review must stay quiet, or every prose PR grows a report of nothing.
+quiet=$(printf '%s' "$(payload Bash 'gh pr create' "$prose")" |
+  env -u SKILL_REVIEW_GATE -u SKILL_REVIEW_GATE_ACTIVE \
+    PATH="$READY:/usr/bin:/bin" CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT" \
+    bash "$GATE" 2>/dev/null)
+if [ -z "$quiet" ]; then
+  ok "a READY review with nothing to say stays silent"
+else
+  no "a READY review with nothing to say stays silent" "it emitted: $quiet"
+fi
+
 printf '\n%d passed, %d failed\n' "$passed" "$failed"
 [ "$failed" -eq 0 ]

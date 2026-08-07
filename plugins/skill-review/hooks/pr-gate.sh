@@ -148,8 +148,9 @@ $prose_diff
 ===== END DIFF =====
 $truncation
 
-Report as the contract directs. Then end your reply with exactly one line,
-nothing after it:
+Report as the contract directs, putting anything outside the three axes under
+a heading of exactly "## Observations". Then end your reply with exactly one
+line, nothing after it:
 
 VERDICT: READY
 or
@@ -175,7 +176,22 @@ out=$(SKILL_REVIEW_GATE_ACTIVE=1 \
   --disallowed-tools Bash Write Edit NotebookEdit WebFetch WebSearch "mcp__*" \
   2>/dev/null <<<"$prompt") || exit 0
 
-printf '%s' "$out" | grep -q '^VERDICT: NOT READY[[:space:]]*$' || exit 0
+if ! printf '%s' "$out" | grep -q '^VERDICT: NOT READY[[:space:]]*$'; then
+  # READY. Observations leave the verdict alone, so this is the only path they
+  # ever arrive on — discarding them here would throw away the one thing a
+  # passing review still produced. systemMessage is the non-blocking channel;
+  # stderr on an exit-0 hook reaches the transcript, not the user.
+  obs=$(printf '%s\n' "$out" |
+    awk '/^## Observations[[:space:]]*$/ { on = 1; next }
+         /^## / || /^VERDICT: / { on = 0 }
+         on')
+  if [ -n "$(printf '%s' "$obs" | tr -d '[:space:]')" ]; then
+    jq -n --arg m "skill-review gate: READY. The review filed observations that
+do not block, and are lost if nobody reads them here. Relay them to the user.
+$obs" '{systemMessage: $m}'
+  fi
+  exit 0
+fi
 
 {
   echo "skill-review gate: NOT READY."
