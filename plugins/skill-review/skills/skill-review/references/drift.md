@@ -36,8 +36,11 @@ silently. Corollaries:
    a finding) · DRIFTED (contradicts another rendering — a finding
    citing both) · ORPHANED (a pointer whose target moved or no longer
    states the rule — a finding).
-4. **Homeless-rule check.** A rule the diff introduces with no
-   normative home is a finding; name the home it should get.
+4. **Homeless-rule check.** A rule with no normative home is a finding,
+   whether the change introduces it or only leans on it — including a
+   rule you invoked to clear a candidate, which is the one nobody
+   checks. A statement that lives only in a file disclaiming its own
+   authority is not a home. Name the home it should get.
 5. **Consistency sweep** over the drift-prone classes: caps and
    thresholds, verdict and state vocabularies, field lists across
    JSON/contract/prose renderings, cost estimates, and counts ("all
