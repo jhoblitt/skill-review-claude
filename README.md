@@ -85,10 +85,10 @@ prose. Everything else exits in a few milliseconds, with no model
 involvement and no tokens spent.
 
 The gate ships as Go source and compiles itself on first use, caching
-the binary under the plugin's data directory, where it survives plugin
-updates until the source changes. The one-time build costs a couple of
-seconds on the call that triggers it; every call after runs the cached
-binary.
+the binary under the plugin's data directory. A plugin update or a
+source change rebuilds it the same way on the next call. The build
+costs a couple of seconds on the call that triggers it; every other
+call runs the cached binary.
 
 It fires when the diff against the base branch touches a `SKILL.md`, a
 `CLAUDE.md` or `AGENTS.md`, an `.md` file directly inside `agents/`,
