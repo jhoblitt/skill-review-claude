@@ -128,7 +128,7 @@ func run() int {
 	if err != nil {
 		return 0
 	}
-	f.Close()
+	_ = f.Close()
 
 	limit := diffCapFrom(os.Getenv("SKILL_REVIEW_GATE_DIFF_CAP"))
 
@@ -177,27 +177,24 @@ func run() int {
 		Truncation: truncation,
 	})
 
+	// The bash gate handed this to timeout(1), whose invalid-interval error
+	// landed on the fail-open; an unparsable or negative value keeps that
+	// behavior. Zero disables the deadline, as timeout(1) did.
 	var timeout time.Duration
-	switch env := os.Getenv("SKILL_REVIEW_GATE_TIMEOUT"); {
-	case env == "":
+	if env := os.Getenv("SKILL_REVIEW_GATE_TIMEOUT"); env == "" {
 		timeout = 180 * time.Second
-	default:
-		// The bash gate handed this to timeout(1), whose invalid-interval error
-		// landed on the fail-open; an unparsable or negative value keeps that
-		// behavior. Zero disables the deadline, as timeout(1) did.
-		if n, err := strconv.Atoi(env); err == nil {
-			if n < 0 {
-				return 0
-			}
-			timeout = time.Duration(n) * time.Second
-		} else if d, err := time.ParseDuration(env); err == nil {
-			if d < 0 {
-				return 0
-			}
-			timeout = d
-		} else {
+	} else if n, err := strconv.Atoi(env); err == nil {
+		if n < 0 {
 			return 0
 		}
+		timeout = time.Duration(n) * time.Second
+	} else if d, err := time.ParseDuration(env); err == nil {
+		if d < 0 {
+			return 0
+		}
+		timeout = d
+	} else {
+		return 0
 	}
 
 	// Judgment work — deliberately not tiered down. See the token-usage axis.
@@ -258,7 +255,7 @@ environment.
 			"do not block, and are lost if nobody reads them here. Relay them to the user.\n" +
 			obs})
 		if err == nil {
-			os.Stdout.Write(append(msg, '\n'))
+			_, _ = os.Stdout.Write(append(msg, '\n'))
 		}
 	}
 	return 0
