@@ -133,6 +133,19 @@ Validate after changes:
 claude plugin validate .
 ```
 
+The drift axis's rendering hunt runs
+[`tools/dupscan`](plugins/skill-review/tools/dupscan), which reports the file
+pairs sharing the longest runs of prose. It needs a Go toolchain, as the gate
+does:
+
+```sh
+go build -C plugins/skill-review/tools/dupscan -o "$PWD/dupscan" .
+./dupscan -min 12 plugins
+```
+
+It ranks candidates and classifies none of them; `references/drift.md` owns
+what a finding is.
+
 Before editing prose, read [`AGENTS.md`](AGENTS.md). It is the register of
 which files may render the review contract for another audience, what each may
 carry, and what obliges them to be rewritten when a rule moves — this file's

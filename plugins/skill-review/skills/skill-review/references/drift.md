@@ -29,8 +29,23 @@ silently. Corollaries:
    shared contract — one pipeline per rule or rule-batch. Stage one
    searches the WHOLE repo by distinctive phrases, numbers, and token
    names, not exact strings: drifted copies no longer match exactly.
-   Stage two applies step 3 to what stage one found. Tier the stages
-   apart: mechanical search cheap, classification at full capability.
+   Run `tools/dupscan` for it, not grep alone — grep is line-oriented,
+   so a rule restated at a different wrap column is invisible to it
+   however verbatim the words, and that is the copy most likely to have
+   survived earlier review:
+
+   ```sh
+   go build -C "${CLAUDE_PLUGIN_ROOT}/tools/dupscan" -o "${TMPDIR:-/tmp}/dupscan" .
+   "${TMPDIR:-/tmp}/dupscan" -min 12 <paths>
+   ```
+
+   Built first, then run: the tool is its own Go module, so a `go run` from
+   the repo under review has no module to resolve it against.
+
+   It ranks file pairs by the longest run of prose they share and
+   classifies none of them. Stage two applies step 3 to what it and the
+   phrase searches turned up. Tier the stages apart: stage one is not a
+   model at all, classification is full capability.
 3. **Classify every rendering**: NORMATIVE (the one home) · POINTER
    (names rule and home, no re-explanation) · RESTATED (re-explains —
    a finding) · DRIFTED (contradicts another rendering — a finding
