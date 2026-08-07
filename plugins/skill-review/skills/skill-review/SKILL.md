@@ -55,11 +55,14 @@ Every axis runs under one contract:
   reported, however plausible it reads.
 - **Report, never fix** — unless the user asks.
 - **Verdict: READY / NOT READY** + the must-fix list. Any finding on
-  any axis blocks.
+  any axis blocks, and nothing else does. Anything you notice outside
+  the three axes belongs in a separate observations section that leaves
+  the verdict alone — a gate whose blocking set the reviewer can widen
+  has no stopping condition.
 - **Scope: drift, concurrency, and token usage only** — how rules are
   stated, how work is dispatched, and what it costs to run. This gate
   does not judge meaning, triggering quality, or coverage; compose it
-  with a content reviewer for those.
+  with a content reviewer to cover those properly.
 
 ## Repo-wide audit
 

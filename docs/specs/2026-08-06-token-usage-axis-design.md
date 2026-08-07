@@ -1,10 +1,8 @@
 # Design — token usage review axis
 
-**Status:** accepted, 2026-08-06. **Non-normative.** A dated record of
-why the token-usage axis is shaped the way it is. The live rules live
-in `plugins/skill-review/skills/skill-review/` — the shared contract in
-`SKILL.md`, this axis in `references/token-usage.md`. When this
-document and those disagree, they win and this is stale history.
+**Status:** accepted, 2026-08-06. **Non-normative** — see `AGENTS.md`,
+"Design records", for what that means and what this file may hold. A
+dated record of why the token-usage axis is shaped the way it is.
 
 Follows [2026-08-06-concurrency-axis-design.md](2026-08-06-concurrency-axis-design.md),
 whose deferred router decision this design executes.
@@ -51,56 +49,6 @@ The judgment-heavy types get the strictest bars: `WEAKSUPER` must name
 the decomposition decision the tier cannot make and the worker count
 at risk; `OVERTIER` must name the deterministic check that backstops
 going cheaper, and reports nothing without one.
-
-## The rule
-
-**Cheapest sufficient mechanism.** Every operation runs on the
-cheapest mechanism that can do it correctly: code before model, small
-model before large, targeted read before whole file, load-on-demand
-before load-always. Cost is justified only by capability actually
-required.
-
-*Sufficient* is load-bearing. An under-tiered supervisor is not cheap,
-it is insufficient — which is why the rule catches under-tiering and
-over-tiering with one statement instead of two.
-
-Corollaries: cheapness upstream is amplified downstream · cost paid
-per invocation dominates cost paid per run · deterministic output
-belongs in code · cheap gates precede expensive work · judgment is not
-a cost centre.
-
-## Finding vocabulary
-
-Model class: `WEAKSUPER`, `OVERTIER`, `TIEREDJUDGE`, `UNTIERED`.
-
-Code versus model: `REGEN` (agent made to write code the skill could
-ship), `INCONTEXT` (bulk data through context a script could reduce),
-`MODELDET` (model doing deterministic work a tool does better).
-
-Footprint: `MONOLITH`. Context economy: `VERBOSERET`, `WIDEREAD`.
-Ordering: `LATEGATE`. Orchestration cost: `HEAVY`, `OVERSIZED`,
-`COSTBLIND`.
-
-## Layout
-
-```text
-skills/skill-review/
-  SKILL.md                    router: intro, axis table, shared
-                              contract, repo-wide audit
-  references/drift.md         axis 1
-  references/concurrency.md   axis 2
-  references/token-usage.md   axis 3
-```
-
-`SKILL.md` drops from 9,075 to 3,624 bytes — a 60% cut in
-always-billed content while total content grows to 15,570 across four
-files. A structure-only request now loads the router plus one
-reference instead of every axis.
-
-The shared contract gains one bullet, evidence-or-silence, and updates
-three renderings from two axes to three (modes, verdict, scope
-boundary). Each reference opens by pointing at the contract rather
-than restating it.
 
 ## Non-goals
 

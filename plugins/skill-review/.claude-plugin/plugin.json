@@ -2,7 +2,7 @@
   "name": "skill-review",
   "displayName": "Skill Review",
   "version": "0.5.2",
-  "description": "Three-axis review gate for Claude Code skill, agent, and plugin prose: the one-normative-home rule against duplication and drift, the shape-matches-the-work rule against mis-dispatched concurrency, the cheapest-sufficient-mechanism rule against token waste, a pre-PR gate over instruction diffs, and repo-wide audits",
+  "description": "Three-axis review gate for Claude Code skill, agent, and plugin prose — drift, concurrency, and token usage — enforcing the one-normative-home, shape-matches-the-work, and cheapest-sufficient-mechanism rules across a pre-PR instruction diff or a whole repo",
   "author": {
     "name": "Joshua Hoblitt",
     "email": "josh@hoblitt.com",
