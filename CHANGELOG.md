@@ -1,3 +1,5 @@
+## [0.8.0](https://github.com/jhoblitt/skill-review-claude/compare/v0.7.0...v0.8.0) (2026-08-07)
+
 ## [0.7.0](https://github.com/jhoblitt/skill-review-claude/compare/v0.6.0...v0.7.0) (2026-08-07)
 
 ## [0.6.0](https://github.com/jhoblitt/skill-review-claude/compare/v0.5.2...v0.6.0) (2026-08-07)
