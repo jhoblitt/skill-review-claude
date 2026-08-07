@@ -29,6 +29,34 @@ jobs:
           claude plugin validate .
           claude plugin validate plugins/skill-review
 
+      - name: Set up Go
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: plugins/skill-review/hooks/pr-gate/go.mod
+          cache: false
+
+      - name: gofmt
+        run: |
+          unformatted=$(gofmt -l plugins/skill-review/hooks/pr-gate)
+          [ -z "$unformatted" ] || { printf 'gofmt needed:\n%s\n' "$unformatted"; exit 1; }
+
+      - name: go vet
+        working-directory: plugins/skill-review/hooks/pr-gate
+        run: go vet ./...
+
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v9.3.0
+        with:
+          version: v2.12.2
+          working-directory: plugins/skill-review/hooks/pr-gate
+
+      - name: go test
+        working-directory: plugins/skill-review/hooks/pr-gate
+        run: go test ./...
+
+      - name: shellcheck
+        run: shellcheck plugins/skill-review/hooks/pr-gate.sh tests/pr-gate-test.sh
+
       - name: Test the PR gate hook
         run: tests/pr-gate-test.sh
 

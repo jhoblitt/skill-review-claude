@@ -4,3 +4,7 @@ updates:
     directory: /
     schedule:
       interval: weekly
+  - package-ecosystem: gomod
+    directory: /plugins/skill-review/hooks/pr-gate
+    schedule:
+      interval: weekly

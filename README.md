@@ -81,8 +81,14 @@ finding on any axis blocks the verdict — nothing else does.
 
 The plugin ships a `PreToolUse` hook that runs the gate before
 `gh pr create` — but only when the branch actually changes instruction
-prose. Everything else exits in about 4 ms of shell, with no model
+prose. Everything else exits in a few milliseconds, with no model
 involvement and no tokens spent.
+
+The gate ships as Go source and compiles itself on first use, caching
+the binary under the plugin's data directory. A plugin update or a
+source change rebuilds it the same way on the next call. The build
+costs a couple of seconds on the call that triggers it; every other
+call runs the cached binary.
 
 It fires when the diff against the base branch touches a `SKILL.md`, a
 `CLAUDE.md` or `AGENTS.md`, an `.md` file directly inside `agents/`,
@@ -94,9 +100,9 @@ rather than the whole review: `NOT READY` blocks the command and reports the
 findings; `READY` passes the command through, and hands on any observations
 the review filed.
 
-The gate fails open. A missing `claude` or `jq`, a timeout, an
-undiscoverable base branch, or any other surprise lets the PR through —
-a broken gate must never block work.
+The gate fails open. A missing `claude` or Go toolchain, a failed
+build, a timeout, an undiscoverable base branch, or any other surprise
+lets the PR through — a broken gate must never block work.
 
 | variable | effect |
 | --- | --- |
