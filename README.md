@@ -10,7 +10,7 @@ enforces one rule against one of them:
 
 | axis | rule | what it catches |
 | --- | --- | --- |
-| **drift** | every rule has exactly one normative statement; every other mention is a pointer to it | a rule restated in a second place, two renderings that have drifted apart, a pointer whose target moved, a new rule with no normative home |
+| **drift** | every rule has exactly one normative statement; every other mention is a pointer to it | a rule restated in a second place, two renderings that have drifted apart, a pointer whose target moved, a rule with no normative home |
 | **concurrency** | a procedure's control flow matches the dependency structure of the work it describes | independent work walked one item at a time, subagents spread across turns so they run serially anyway, a collect-all barrier that earns nothing — and unsafe fan-out: parallel writers without isolation, order-dependent work, unbounded sets with no cap |
 | **token usage** | every operation runs on the cheapest mechanism that can do it correctly | a supervisor tiered below the decisions it must make, mechanical work on a frontier model, code the skill could ship but makes an agent rewrite, prose billed on every trigger that only some invocations need |
 
@@ -71,9 +71,11 @@ index; it does not update the installed plugin.
 The gate reports drift, concurrency, and token-usage findings —
 restated, drifted, orphaned, and homeless rules; serialized or unsafe
 fan-out; and operations running on a costlier mechanism than they need.
-It does not judge meaning, triggering quality, or coverage; compose it
-with a content reviewer for those. Findings are reported, never
-auto-fixed, and any finding on any axis blocks the verdict.
+Anything it notices outside those three lands in a separate observations
+section that leaves the verdict alone. It does not judge meaning,
+triggering quality, or coverage; compose it with a content reviewer to
+cover those properly. Findings are reported, never auto-fixed, and any
+finding on any axis blocks the verdict — nothing else does.
 
 ## Automatic gate
 
@@ -85,10 +87,12 @@ involvement and no tokens spent.
 It fires when the diff against the base branch touches a `SKILL.md`, a
 `CLAUDE.md` or `AGENTS.md`, an `.md` file directly inside `agents/`,
 `commands/`, or `references/`, or a `.claude-plugin/*.json` manifest.
-When it does fire, the review runs in a separate `claude -p` process
-restricted to read-only tools, so your session receives the verdict
-rather than the whole review. `NOT READY` blocks the command and
-reports the findings; `READY` is silent.
+When it does fire, the review runs in a separate `claude -p` process with the
+shell, the file writers, network access, and MCP tools denied outright, so it
+reads your branch rather than editing it. Your session receives the verdict
+rather than the whole review: `NOT READY` blocks the command and reports the
+findings; `READY` passes the command through, and hands on any observations
+the review filed.
 
 The gate fails open. A missing `claude` or `jq`, a timeout, an
 undiscoverable base branch, or any other surprise lets the PR through —
@@ -98,6 +102,19 @@ a broken gate must never block work.
 | --- | --- |
 | `SKILL_REVIEW_GATE=off` | skip the gate for that command |
 | `SKILL_REVIEW_GATE_TIMEOUT` | seconds before the review gives up (default 180) |
+| `SKILL_REVIEW_GATE_DIFF_CAP` | prose diff lines handed to the review (default 3000) |
+
+Keep the timeout under the hook's own budget — the `timeout` field in
+`hooks.json`, which ships with the plugin and is replaced on update. Past it the
+harness kills the hook first, and because the gate fails open, a raised timeout
+buys no review at all. The headroom over the default is modest, so a much larger
+cap may not fit however you tune the two together.
+
+A branch whose prose diff runs past the cap is reviewed on the truncated diff
+plus the post-change files, so the pre-change half of what was cut goes unread.
+The review still returns a verdict either way, `READY` included — raise the cap
+for a bulk prose rewrite you want graded in full, and the timeout with it, within
+the ceiling above.
 
 Hooks load at session start, so run `/reload-plugins` or restart after
 installing or updating.
@@ -109,6 +126,11 @@ Validate after changes:
 ```sh
 claude plugin validate .
 ```
+
+Before editing prose, read [`AGENTS.md`](AGENTS.md). It is the register of
+which files may render the review contract for another audience, what each may
+carry, and what obliges them to be rewritten when a rule moves — this file's
+Scope section among them.
 
 Content changes land via PR. Commit messages follow
 [Conventional Commits](https://www.conventionalcommits.org/) — commitlint
