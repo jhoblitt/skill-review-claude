@@ -15,9 +15,18 @@ set -uo pipefail
 ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 GATE="$ROOT/plugins/skill-review/hooks/pr-gate.sh"
 PLUGIN_ROOT="$ROOT/plugins/skill-review"
+GO_SRC="$PLUGIN_ROOT/hooks/pr-gate"
 
 WORK=$(mktemp -d)
 trap 'rm -rf "$WORK"' EXIT
+
+# Built once, with the ambient PATH, so the PATH-pinned cases below never
+# need a toolchain: to the launcher a fresh binary is simply not stale.
+mkdir -p "$WORK/data"
+(cd "$GO_SRC" && go build -o "$WORK/data/pr-gate" .) || {
+  echo "FATAL: cannot build the gate binary" >&2
+  exit 1
+}
 
 passed=0
 failed=0
@@ -83,7 +92,8 @@ run_gate() {
   shift 2
   printf '%s' "$json" |
     env -u SKILL_REVIEW_GATE -u SKILL_REVIEW_GATE_ACTIVE \
-      PATH="$bin:/usr/bin:/bin" CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT" "$@" \
+      PATH="$bin:/usr/bin:/bin" CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT" \
+      CLAUDE_PLUGIN_DATA="$WORK/data" "$@" \
       bash "$GATE" >/dev/null 2>&1
 }
 
@@ -136,6 +146,7 @@ expect "prose PR, review says NOT READY" 2 \
 stderr=$(printf '%s' "$(payload Bash 'gh pr create' "$prose")" |
   env -u SKILL_REVIEW_GATE -u SKILL_REVIEW_GATE_ACTIVE \
     PATH="$BLOCK:/usr/bin:/bin" CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT" \
+    CLAUDE_PLUGIN_DATA="$WORK/data" \
     bash "$GATE" 2>&1 >/dev/null)
 case "$stderr" in
 *"NOT READY"*"SKILL_REVIEW_GATE=off"*)
@@ -455,6 +466,7 @@ chmod +x "$obs_bin/claude"
 emitted=$(printf '%s' "$(payload Bash 'gh pr create' "$prose")" |
   env -u SKILL_REVIEW_GATE -u SKILL_REVIEW_GATE_ACTIVE \
     PATH="$obs_bin:/usr/bin:/bin" CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT" \
+    CLAUDE_PLUGIN_DATA="$WORK/data" \
     bash "$GATE" 2>/dev/null)
 code=$?
 if [ "$code" -eq 0 ] &&
@@ -469,6 +481,7 @@ fi
 quiet=$(printf '%s' "$(payload Bash 'gh pr create' "$prose")" |
   env -u SKILL_REVIEW_GATE -u SKILL_REVIEW_GATE_ACTIVE \
     PATH="$READY:/usr/bin:/bin" CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT" \
+    CLAUDE_PLUGIN_DATA="$WORK/data" \
     bash "$GATE" 2>/dev/null)
 if [ -z "$quiet" ]; then
   ok "a READY review with nothing to say stays silent"
