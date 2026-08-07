@@ -489,5 +489,93 @@ else
   no "a READY review with nothing to say stays silent" "it emitted: $quiet"
 fi
 
+echo
+echo "launcher lifecycle — how the binary comes to exist"
+
+# Like run_gate, but with the ambient PATH kept so `go` stays findable, and
+# the data directory and plugin root chosen per case.
+run_wrapper() {
+  local json=$1 stub=$2 data=$3 plugroot=$4
+  printf '%s' "$json" |
+    env -u SKILL_REVIEW_GATE -u SKILL_REVIEW_GATE_ACTIVE \
+      PATH="$stub:$PATH" CLAUDE_PLUGIN_ROOT="$plugroot" \
+      CLAUDE_PLUGIN_DATA="$data" \
+      bash "$GATE" >/dev/null 2>&1
+}
+
+cold="$WORK/data-cold"
+mkdir -p "$cold"
+run_wrapper "$(payload Bash 'gh pr create' "$prose")" "$BLOCK" "$cold" "$PLUGIN_ROOT"
+code=$?
+if [ "$code" -eq 2 ] && [ -x "$cold/pr-gate" ]; then
+  ok "an empty cache cold-builds the binary and still blocks"
+else
+  no "an empty cache cold-builds the binary and still blocks" \
+    "exit $code, binary $([ -x "$cold/pr-gate" ] && echo present || echo missing)"
+fi
+
+# Only provable when the pinned PATH really lacks go; on hosts where go lives
+# in /usr/bin the launcher will happily build, and there is nothing to test.
+if PATH="/usr/bin:/bin" command -v go >/dev/null 2>&1; then
+  ok "missing toolchain fails open (skipped: go lives on the pinned PATH)"
+else
+  none="$WORK/data-none"
+  mkdir -p "$none"
+  expect "missing toolchain fails open" 0 \
+    "$(payload Bash 'gh pr create' "$prose")" "$BLOCK" CLAUDE_PLUGIN_DATA="$none"
+fi
+
+# A broken build must fail open once, then cool down — not retry its ~2s
+# compile on every Bash call in the session.
+broken_root="$WORK/plugin-broken"
+cp -r "$PLUGIN_ROOT" "$broken_root"
+printf 'package main\nfunc broken(\n' >"$broken_root/hooks/pr-gate/broken.go"
+bdata="$WORK/data-broken"
+mkdir -p "$bdata"
+marker="$bdata/pr-gate.buildfail"
+run_wrapper "$(payload Bash 'gh pr create' "$prose")" "$BLOCK" "$bdata" "$broken_root"
+code=$?
+if [ "$code" -eq 0 ] && [ -f "$marker" ] && [ ! -e "$bdata/pr-gate" ]; then
+  ok "a broken source tree fails open and leaves a cooldown marker"
+else
+  no "a broken source tree fails open and leaves a cooldown marker" \
+    "exit $code, marker $([ -f "$marker" ] && echo present || echo missing)"
+fi
+
+# The marker is rewritten on every failed attempt, so an unchanged mtime is
+# what proves the second call never tried.
+m1=$(stat -c %Y "$marker" 2>/dev/null || stat -f %m "$marker" 2>/dev/null)
+run_wrapper "$(payload Bash 'gh pr create' "$prose")" "$BLOCK" "$bdata" "$broken_root"
+code=$?
+m2=$(stat -c %Y "$marker" 2>/dev/null || stat -f %m "$marker" 2>/dev/null)
+if [ "$code" -eq 0 ] && [ -n "$m1" ] && [ "$m1" = "$m2" ]; then
+  ok "the cooldown skips a second build attempt"
+else
+  no "the cooldown skips a second build attempt" "exit $code, marker mtime ${m1:-?} -> ${m2:-?}"
+fi
+
+rm -f "$broken_root/hooks/pr-gate/broken.go"
+run_wrapper "$(payload Bash 'gh pr create' "$prose")" "$BLOCK" "$bdata" "$broken_root"
+code=$?
+if [ "$code" -eq 2 ] && [ -x "$bdata/pr-gate" ] && [ ! -f "$marker" ]; then
+  ok "a source change re-arms the build immediately"
+else
+  no "a source change re-arms the build immediately" \
+    "exit $code, marker $([ -f "$marker" ] && echo still-present || echo gone)"
+fi
+
+# Staleness: the sentinel borrows the old binary's mtime, so `-newer` can
+# only be satisfied by a rebuild.
+sentinel="$WORK/stale-sentinel"
+touch -r "$WORK/data/pr-gate" "$sentinel"
+touch "$GO_SRC/gate.go"
+run_wrapper "$(payload Bash 'gh pr create' "$prose")" "$BLOCK" "$WORK/data" "$PLUGIN_ROOT"
+code=$?
+if [ "$code" -eq 2 ] && [ -n "$(find "$WORK/data/pr-gate" -newer "$sentinel" -print 2>/dev/null)" ]; then
+  ok "a touched source rebuilds the cached binary"
+else
+  no "a touched source rebuilds the cached binary" "exit $code"
+fi
+
 printf '\n%d passed, %d failed\n' "$passed" "$failed"
 [ "$failed" -eq 0 ]
