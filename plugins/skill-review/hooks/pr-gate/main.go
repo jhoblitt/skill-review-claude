@@ -203,20 +203,15 @@ func run() int {
 	// MAX_ARG_STRLEN (128 KiB on Linux), which a capped diff can still exceed,
 	// and the exec failure would land on the fail-open below silently.
 	//
-	// --allowed-tools only grants; it cannot take away what the caller's own
-	// settings already permit, so a `Bash(*)` allow upstream would otherwise
-	// hand this process a shell. The denials are what actually confine it.
+	// What the review may and may not call, and why it is a deny list rather
+	// than an allow list, is in gate.go beside the roster.
 	ctx := context.Background()
 	if timeout > 0 {
 		var cancel context.CancelFunc
 		ctx, cancel = context.WithTimeout(ctx, timeout)
 		defer cancel()
 	}
-	cmd := exec.CommandContext(ctx, "claude", "-p",
-		"--permission-mode", "dontAsk",
-		"--allowed-tools", "Read", "Grep", "Glob",
-		"--disallowed-tools", "Bash", "Write", "Edit", "NotebookEdit",
-		"WebFetch", "WebSearch", "mcp__*")
+	cmd := exec.CommandContext(ctx, "claude", reviewArgs()...)
 	cmd.Dir = top
 	cmd.Stdin = strings.NewReader(prompt + "\n")
 	cmd.Env = append(os.Environ(), "SKILL_REVIEW_GATE_ACTIVE=1")

@@ -207,3 +207,85 @@ func TestBuildPrompt(t *testing.T) {
 		t.Error("truncation notice not seated directly after the closing fence")
 	}
 }
+
+// The roster is asserted by property, not by a second copy of the list: a
+// duplicate here would drift from the one that ships, which is the failure
+// this repository exists to catch. What matters is that the review keeps what
+// it reads and fans out with, loses each class of tool that could escape it,
+// and that the two sets never overlap — a name in both is denied, so an
+// allow-list entry that quietly stops working would otherwise go unnoticed.
+func TestReviewRoster(t *testing.T) {
+	allowed := map[string]bool{}
+	for _, a := range allowedTools {
+		allowed[a] = true
+	}
+	denied := map[string]bool{}
+	for _, d := range deniedTools {
+		denied[d] = true
+	}
+
+	for _, a := range allowedTools {
+		if denied[a] {
+			t.Errorf("%q is both granted and denied; the denial wins", a)
+		}
+	}
+
+	// Read, Grep and Glob are the review's only route to the tree with the
+	// shell denied; Task is the fan-out every axis's census depends on.
+	for _, need := range []string{"Read", "Grep", "Glob", "Task"} {
+		if !allowed[need] {
+			t.Errorf("review cannot work without %q granted", need)
+		}
+	}
+
+	// One representative per class of escape, named in the finding vocabulary
+	// the axes use: a shell, a writer, the network, persistence past the
+	// process, reach outside it, and loading more capability.
+	for _, hazard := range []string{
+		"Bash", "Write", "WebFetch", "CronCreate", "EnterWorktree",
+		"SendMessage", "Workflow", "Skill", "ToolSearch",
+	} {
+		if !denied[hazard] {
+			t.Errorf("%q reaches the review; it must be denied", hazard)
+		}
+	}
+}
+
+// The flags carry the roster only if each list lands under its own flag. This
+// parses argv back the way the e2e suite does, so a misplaced flag fails here
+// rather than silently granting the deny list.
+func TestReviewArgs(t *testing.T) {
+	args := reviewArgs()
+
+	section := func(flag string) []string {
+		var out []string
+		for i, a := range args {
+			if a != flag {
+				continue
+			}
+			for _, v := range args[i+1:] {
+				if strings.HasPrefix(v, "--") {
+					break
+				}
+				out = append(out, v)
+			}
+			return out
+		}
+		return nil
+	}
+
+	got := strings.Join(section("--allowed-tools"), " ")
+	if got != strings.Join(allowedTools, " ") {
+		t.Errorf("--allowed-tools carried %q", got)
+	}
+	got = strings.Join(section("--disallowed-tools"), " ")
+	if got != strings.Join(deniedTools, " ") {
+		t.Errorf("--disallowed-tools carried %q", got)
+	}
+	if len(args) == 0 || args[0] != "-p" {
+		t.Error("review must run headless: -p has to lead the argv")
+	}
+	if strings.Join(section("--permission-mode"), " ") != "dontAsk" {
+		t.Error("review must not be able to prompt; the hook has no one to ask")
+	}
+}

@@ -9,6 +9,58 @@ import (
 
 const diffCapDefault = 3000
 
+// The roster the review process runs with. `--allowed-tools` only grants
+// permission — it does not narrow what the process is handed, so naming three
+// tools there left every other tool the harness offered still callable:
+// schedulers, worktree creation, outward-facing messaging, and Workflow among
+// them. Only `--disallowed-tools` removes anything, and it has no usable
+// wildcard, because `--disallowed-tools '*'` denies the granted tools too and
+// hands the review a roster of nothing.
+//
+// Enumeration is therefore the only mechanism the flags offer, which makes
+// this a blocklist that any tool a future harness adds joins on the permitted
+// side. Re-measure the roster when the harness gains tools; the review's input
+// is untrusted instruction prose, so a tool that reaches the network or
+// outlives the process is the one that matters.
+//
+// Task stays granted because every axis fans its census out, and the denials
+// are inherited by those subagents — which is what makes permitting it safe. A
+// harness naming that tool something else still reaches it: only the names
+// below are removed.
+//
+// LSP is granted because a plugin's prose and the code enforcing it live in
+// one repo, and the review reads both: the hook, the tools an axis cites, and
+// the tests around them are as much under review as the SKILL.md citing them.
+// It is the one grant that runs another program over the tree — it reaches
+// every configured language server, not the markdown one alone — and it buys
+// nothing on the prose itself, whose pointers are inline code that no link
+// graph can see.
+var (
+	allowedTools = []string{"Read", "Grep", "Glob", "Task", "LSP"}
+
+	deniedTools = []string{
+		"Bash", "BashOutput", "KillShell", "Write", "Edit", "NotebookEdit",
+		"WebFetch", "WebSearch", "mcp__*",
+		"EnterWorktree", "ExitWorktree",
+		"CronCreate", "CronDelete", "CronList", "ScheduleWakeup", "Monitor",
+		"TaskCreate", "TaskGet", "TaskList", "TaskOutput", "TaskStop",
+		"TaskUpdate", "TodoWrite", "DesignSync",
+		"SendMessage", "RemoteTrigger", "PushNotification", "ListAgents",
+		"Workflow", "Skill", "SlashCommand", "ToolSearch",
+		"AskUserQuestion", "Artifact", "ReportFindings",
+		"EnterPlanMode", "ExitPlanMode", "EndConversation",
+	}
+)
+
+// reviewArgs is the full argv the review subprocess runs with, so the roster
+// above reaches it as one list rather than two literals at the call site.
+func reviewArgs() []string {
+	args := []string{"-p", "--permission-mode", "dontAsk", "--allowed-tools"}
+	args = append(args, allowedTools...)
+	args = append(args, "--disallowed-tools")
+	return append(args, deniedTools...)
+}
+
 var (
 	ghPrCreateRe = regexp.MustCompile(`(^|[;&|[:space:]])gh[[:space:]]+pr[[:space:]]+create`)
 
