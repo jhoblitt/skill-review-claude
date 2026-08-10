@@ -94,8 +94,9 @@ It fires when the diff against the base branch touches a `SKILL.md`, a
 `CLAUDE.md` or `AGENTS.md`, an `.md` file directly inside `agents/`,
 `commands/`, or `references/`, or a `.claude-plugin/*.json` manifest.
 When it does fire, the review runs in a separate `claude -p` process holding
-four tools: `Read`, `Grep` and `Glob` to read your branch, and the subagent
-dispatch the axes fan their censuses out with. Everything else is denied by
+five tools: `Read`, `Grep` and `Glob` to read your branch, `LSP` to navigate
+the code a plugin ships alongside its prose, and the subagent dispatch the
+axes fan their censuses out with. Everything else is denied by
 name — the shell, the file writers, the network, MCP, schedulers, worktrees,
 outward-facing messaging, and anything that would load more capability — and
 those denials are inherited by the subagents. So the review reads your branch

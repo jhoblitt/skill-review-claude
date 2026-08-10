@@ -27,8 +27,16 @@ const diffCapDefault = 3000
 // are inherited by those subagents — which is what makes permitting it safe. A
 // harness naming that tool something else still reaches it: only the names
 // below are removed.
+//
+// LSP is granted because a plugin's prose and the code enforcing it live in
+// one repo, and the review reads both: the hook, the tools an axis cites, and
+// the tests around them are as much under review as the SKILL.md citing them.
+// It is the one grant that runs another program over the tree — it reaches
+// every configured language server, not the markdown one alone — and it buys
+// nothing on the prose itself, whose pointers are inline code that no link
+// graph can see.
 var (
-	allowedTools = []string{"Read", "Grep", "Glob", "Task"}
+	allowedTools = []string{"Read", "Grep", "Glob", "Task", "LSP"}
 
 	deniedTools = []string{
 		"Bash", "BashOutput", "KillShell", "Write", "Edit", "NotebookEdit",
@@ -40,7 +48,7 @@ var (
 		"SendMessage", "RemoteTrigger", "PushNotification", "ListAgents",
 		"Workflow", "Skill", "SlashCommand", "ToolSearch",
 		"AskUserQuestion", "Artifact", "ReportFindings",
-		"EnterPlanMode", "ExitPlanMode", "EndConversation", "LSP",
+		"EnterPlanMode", "ExitPlanMode", "EndConversation",
 	}
 )
 
