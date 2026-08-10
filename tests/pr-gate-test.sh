@@ -248,6 +248,27 @@ else
   no "review subprocess is denied a shell" "deny list was: ${denied:-<none>}"
 fi
 
+# One tool that would outlive the review and one that would widen it. Neither is
+# a shell, so the shell case above passes either way — these fail if the deny
+# list is ever narrowed back to the writers it started as.
+if printf '%s\n' "$denied" | grep -qx CronCreate &&
+  printf '%s\n' "$denied" | grep -qx Workflow; then
+  ok "review subprocess cannot schedule work or spawn a workflow"
+else
+  no "review subprocess cannot schedule work or spawn a workflow" \
+    "deny list was: ${denied:-<none>}"
+fi
+
+# The axes fan their censuses out, so the review is useless without this — and
+# the denials above are what make granting it safe.
+granted=$(awk '/^--allowed-tools$/ {f = 1; next} /^--/ {f = 0} f' "$CAPTURED.argv")
+if printf '%s\n' "$granted" | grep -qx Task; then
+  ok "review subprocess may still fan out to subagents"
+else
+  no "review subprocess may still fan out to subagents" \
+    "allow list was: ${granted:-<none>}"
+fi
+
 # Asserted on the diff header rather than the file list: the list is
 # interpolated separately and would satisfy a looser grep while the headers
 # stayed escaped.

@@ -93,12 +93,16 @@ call runs the cached binary.
 It fires when the diff against the base branch touches a `SKILL.md`, a
 `CLAUDE.md` or `AGENTS.md`, an `.md` file directly inside `agents/`,
 `commands/`, or `references/`, or a `.claude-plugin/*.json` manifest.
-When it does fire, the review runs in a separate `claude -p` process with the
-shell, the file writers, network access, and MCP tools denied outright, so it
-reads your branch rather than editing it. Your session receives the verdict
-rather than the whole review: `NOT READY` blocks the command and reports the
-findings; `READY` passes the command through, and hands on any observations
-the review filed.
+When it does fire, the review runs in a separate `claude -p` process holding
+four tools: `Read`, `Grep` and `Glob` to read your branch, and the subagent
+dispatch the axes fan their censuses out with. Everything else is denied by
+name — the shell, the file writers, the network, MCP, schedulers, worktrees,
+outward-facing messaging, and anything that would load more capability — and
+those denials are inherited by the subagents. So the review reads your branch
+rather than editing it, and nothing it starts outlives it. Your session
+receives the verdict rather than the whole review: `NOT READY` blocks the
+command and reports the findings; `READY` passes the command through, and
+hands on any observations the review filed.
 
 The gate fails open. A missing `claude` or Go toolchain, a failed
 build, a timeout, an undiscoverable base branch, or any other surprise
