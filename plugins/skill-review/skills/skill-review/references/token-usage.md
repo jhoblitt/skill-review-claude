@@ -1,8 +1,9 @@
 # Axis 3 — token usage
 
 Runs under the shared review contract in `SKILL.md`, which owns modes,
-batching, verification, anchoring, one-finding-per-site,
-evidence-or-silence, the verdict, and the scope boundary.
+batching, per-axis dispatch, verification, anchoring,
+one-finding-per-site, evidence-or-silence, the verdict, and the scope
+boundary.
 
 This axis judges what a procedure COSTS to run. Whether its shape is
 correct for the dependencies belongs to `references/concurrency.md`.

@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+	"regexp"
 	"strings"
 	"testing"
 )
@@ -188,8 +190,6 @@ func TestBuildPrompt(t *testing.T) {
 	for _, must := range []string{
 		"Gate this branch before its pull request opens.",
 		"/plugroot/skills/skill-review/SKILL.md",
-		"/plugroot/skills/skill-review/references/token-usage.md",
-		"/plugroot/skills/skill-review/references/security.md",
 		"the diff of origin/main...HEAD below",
 		"post-change files under /repo directly",
 		"\n\n  a/SKILL.md\n\nTheir diff follows",
@@ -199,6 +199,18 @@ func TestBuildPrompt(t *testing.T) {
 	} {
 		if !strings.Contains(p, must) {
 			t.Errorf("prompt missing %q", must)
+		}
+	}
+	// The dispatcher is handed the contract alone; each axis agent reads its own
+	// reference, which is the peak-context saving the per-axis split exists for.
+	// Asserted on the template, not on p: a branch that changes a reference puts
+	// that path in the prose list and the diff, where it belongs.
+	for _, absent := range []string{
+		"references/drift.md", "references/concurrency.md",
+		"references/token-usage.md", "references/security.md",
+	} {
+		if strings.Contains(promptTemplate, absent) {
+			t.Errorf("prompt template still hands the dispatcher %q", absent)
 		}
 	}
 	if strings.HasSuffix(p, "\n") {
@@ -239,7 +251,7 @@ func TestReviewRoster(t *testing.T) {
 	}
 
 	// Read, Grep and Glob are the review's only route to the tree with the
-	// shell denied; Task is the fan-out every axis's census depends on.
+	// shell denied; Task is the dispatch every axis runs in.
 	for _, need := range []string{"Read", "Grep", "Glob", "Task"} {
 		if !allowed[need] {
 			t.Errorf("review cannot work without %q granted", need)
@@ -295,5 +307,62 @@ func TestReviewArgs(t *testing.T) {
 	}
 	if strings.Join(section("--permission-mode"), " ") != "dontAsk" {
 		t.Error("review must not be able to prompt; the hook has no one to ask")
+	}
+	// The gate fails open, so a tier the install cannot serve would disable it
+	// silently rather than degrade it.
+	if len(section("--model")) != 0 {
+		t.Error("review must not pin a model; an unavailable tier would fail the gate open")
+	}
+}
+
+func frontmatter(body, key string) string {
+	m := regexp.MustCompile(`(?m)^` + key + `: *(.+)$`).FindStringSubmatch(body)
+	if m == nil {
+		return ""
+	}
+	return strings.TrimSpace(m[1])
+}
+
+// The dispatch identifiers in SKILL.md, the agent files they name, and the tier
+// those files pin have to agree, and nothing else reads them together:
+// `claude plugin validate` passes with agents/ deleted outright, so a renamed
+// or missing agent would silently drop an axis from every review.
+func TestAxisAgentsMatchContract(t *testing.T) {
+	const root = "../../"
+
+	contract, err := os.ReadFile(root + "skills/skill-review/SKILL.md")
+	if err != nil {
+		t.Fatalf("reading the contract: %v", err)
+	}
+
+	dispatched := map[string]bool{}
+	for _, m := range regexp.MustCompile(`skill-review:([a-z-]+)`).
+		FindAllStringSubmatch(string(contract), -1) {
+		dispatched[m[1]] = true
+	}
+	if len(dispatched) != 4 {
+		t.Fatalf("contract dispatches %d axis agents, want 4: %v", len(dispatched), dispatched)
+	}
+
+	tiers := map[string]string{}
+	for name := range dispatched {
+		body, err := os.ReadFile(root + "agents/" + name + ".md")
+		if err != nil {
+			t.Errorf("contract dispatches %q with no agent file behind it: %v", name, err)
+			continue
+		}
+		if got := frontmatter(string(body), "name"); got != name {
+			t.Errorf("agents/%s.md declares name %q; that dispatch cannot resolve", name, got)
+		}
+		tiers[name] = frontmatter(string(body), "model")
+	}
+
+	for name, tier := range tiers {
+		if tier == "" {
+			t.Errorf("agents/%s.md pins no model", name)
+		} else if tier != tiers["drift-review"] {
+			t.Errorf("agents/%s.md pins %q while drift-review pins %q; the axes must not split tiers",
+				name, tier, tiers["drift-review"])
+		}
 	}
 }

@@ -1,8 +1,9 @@
 # Axis 1 — duplication and drift
 
 Runs under the shared review contract in `SKILL.md`, which owns modes,
-batching, verification, anchoring, one-finding-per-site,
-evidence-or-silence, the verdict, and the scope boundary.
+batching, per-axis dispatch, verification, anchoring,
+one-finding-per-site, evidence-or-silence, the verdict, and the scope
+boundary.
 
 ## The one-normative-home rule
 
@@ -35,12 +36,17 @@ silently. Corollaries:
    survived earlier review:
 
    ```sh
-   go build -C "${CLAUDE_PLUGIN_ROOT}/tools/dupscan" -o "${TMPDIR:-/tmp}/dupscan" .
-   "${TMPDIR:-/tmp}/dupscan" -min 12 <paths>
+   go run -C "${CLAUDE_PLUGIN_ROOT}/tools/dupscan" . -min 12 <absolute paths>
    ```
 
-   Built first, then run: the tool is its own Go module, so a `go run` from
-   the repo under review has no module to resolve it against.
+   `-C` changes directory before module resolution, which is what lets the
+   tool's own module resolve while the repo under review is the working tree;
+   the paths are absolute for the same reason. One invocation, so the whole
+   step is reachable through a `go run` grant and needs no wider shell.
+
+   Where no shell is available — the pre-PR gate denies one — stage one is
+   the phrase searches alone, and the axis says so in its return: a rule
+   restated at a different wrap column can survive that pass unseen.
 
    It ranks file pairs by the longest run of prose they share and
    classifies none of them. Stage two applies step 3 to what it and the

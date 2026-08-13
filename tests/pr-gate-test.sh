@@ -265,8 +265,8 @@ else
     "deny list was: ${denied:-<none>}"
 fi
 
-# The axes fan their censuses out, so the review is useless without this — and
-# the denials above are what make granting it safe.
+# Each axis runs in its own subagent, so the review is useless without this —
+# and the denials above are what make granting it safe.
 granted=$(awk '/^--allowed-tools$/ {f = 1; next} /^--/ {f = 0} f' "$CAPTURED.argv")
 if printf '%s\n' "$granted" | grep -qx Task; then
   ok "review subprocess may still fan out to subagents"

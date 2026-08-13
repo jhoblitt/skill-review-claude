@@ -197,7 +197,8 @@ func run() int {
 		return 0
 	}
 
-	// Judgment work — deliberately not tiered down. See the token-usage axis.
+	// What tier this runs at, and why the gate pins none, is in gate.go beside
+	// reviewArgs.
 	//
 	// The prompt goes in on stdin, not argv: a single argument is capped at
 	// MAX_ARG_STRLEN (128 KiB on Linux), which a capped diff can still exceed,
