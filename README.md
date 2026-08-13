@@ -2,10 +2,10 @@
 
 A [Claude Code plugin marketplace](https://code.claude.com/docs/en/plugin-marketplaces)
 for skill and plugin authors. One plugin, `skill-review`, carrying a
-three-axis review gate for instruction prose: skills, agents, canon and
+four-axis review gate for instruction prose: skills, agents, canon and
 reference files, marketplace repos.
 
-Instruction files fail in three ways code does not, and each axis
+Instruction files fail in four ways code does not, and each axis
 enforces one rule against one of them:
 
 | axis | rule | what it catches |
@@ -13,12 +13,14 @@ enforces one rule against one of them:
 | **drift** | every rule has exactly one normative statement; every other mention is a pointer to it | a rule restated in a second place, two renderings that have drifted apart, a pointer whose target moved, a rule with no normative home |
 | **concurrency** | a procedure's control flow matches the dependency structure of the work it describes | independent work walked one item at a time, subagents spread across turns so they run serially anyway, a collect-all barrier that earns nothing — and unsafe fan-out: parallel writers without isolation, order-dependent work, unbounded sets with no cap |
 | **token usage** | every operation runs on the cheapest mechanism that can do it correctly | a supervisor tiered below the decisions it must make, mechanical work on a frontier model, code the skill could ship but makes an agent rewrite, prose billed on every trigger that only some invocations need |
+| **security** | content crossing a procedure's trust boundary carries no authority over what it does | untrusted content in a prompt unfenced or behind a forgeable fence, prose that obeys instructions inside it, a step reading hostile input with a shell or an outward channel in reach, untrusted content promoted to execution, secrets on wide channels |
 
 Every one of these reads fine on the page — a restatement fails only
-once a copy moves, and prose carries no price tag at all — which is why
-they survive the reviews code gets. All three axes run across a diff or
-a whole repo and report maintainer-grade findings with full
-repo-relative anchors.
+once a copy moves, prose carries no price tag at all, and an injection
+surface looks like plumbing until someone writes the content that uses
+it — which is why they survive the reviews code gets. All four axes run
+across a diff or a whole repo and report maintainer-grade findings with
+full repo-relative anchors.
 
 ## Install
 
@@ -65,17 +67,21 @@ index; it does not update the installed plugin.
 - "is this fan-out safe, or are those agents writing the same files?"
 - "is this skill wasting tokens?"
 - "is a strong enough model supervising that fan-out?"
+- "could a hostile issue body steer this skill?"
+- "what can this skill's input reach if it turns hostile?"
 
 ## Scope
 
-The gate reports drift, concurrency, and token-usage findings —
-restated, drifted, orphaned, and homeless rules; serialized or unsafe
-fan-out; and operations running on a costlier mechanism than they need.
-Anything it notices outside those three lands in a separate observations
-section that leaves the verdict alone. It does not judge meaning,
-triggering quality, or coverage; compose it with a content reviewer to
-cover those properly. Findings are reported, never auto-fixed, and any
-finding on any axis blocks the verdict — nothing else does.
+The gate reports drift, concurrency, token-usage, and security
+findings — restated, drifted, orphaned, and homeless rules; serialized
+or unsafe fan-out; operations running on a costlier mechanism than they
+need; and untrusted input that can steer the executor or reach
+capability its work never required. Anything it notices outside those
+four lands in a separate observations section that leaves the verdict
+alone. It does not judge meaning, triggering quality, or coverage;
+compose it with a content reviewer to cover those properly. Findings
+are reported, never auto-fixed, and any finding on any axis blocks the
+verdict — nothing else does.
 
 ## Automatic gate
 
@@ -92,7 +98,8 @@ call runs the cached binary.
 
 It fires when the diff against the base branch touches a `SKILL.md`, a
 `CLAUDE.md` or `AGENTS.md`, an `.md` file directly inside `agents/`,
-`commands/`, or `references/`, or a `.claude-plugin/*.json` manifest.
+`commands/`, or `references/`, a `.claude-plugin/*.json` manifest, or
+a `hooks/*.json` or `.mcp.json` configuration.
 When it does fire, the review runs in a separate `claude -p` process holding
 five tools: `Read`, `Grep` and `Glob` to read your branch, `LSP` to navigate
 the code a plugin ships alongside its prose, and the subagent dispatch the
@@ -112,14 +119,22 @@ lets the PR through — a broken gate must never block work.
 | variable | effect |
 | --- | --- |
 | `SKILL_REVIEW_GATE=off` | skip the gate for that command |
-| `SKILL_REVIEW_GATE_TIMEOUT` | seconds before the review gives up (default 180) |
+| `SKILL_REVIEW_GATE_TIMEOUT` | seconds before the review gives up (default 540) |
 | `SKILL_REVIEW_GATE_DIFF_CAP` | prose diff lines handed to the review (default 3000) |
 
 Keep the timeout under the hook's own budget — the `timeout` field in
 `hooks.json`, which ships with the plugin and is replaced on update. Past it the
 harness kills the hook first, and because the gate fails open, a raised timeout
-buys no review at all. The headroom over the default is modest, so a much larger
-cap may not fit however you tune the two together.
+buys no review at all. The hook is set to 600 seconds, the harness's own default
+for a command hook, which is the ceiling this pair is tuned against; the review
+gets 540 of it and the rest covers the build, the `git` calls, and the kill
+delay.
+
+The gate is a bounded pass, not the deep review. A four-axis review of a large
+skill — one carrying hooks, tools, and a directory of references — runs past any
+budget a blocking hook can hold, because the user waits behind it. Measured on
+one such skill, the security axis alone took 24 minutes. Invoke the skill
+directly when you want that depth; the hook buys what fits in ten.
 
 A branch whose prose diff runs past the cap is reviewed on the truncated diff
 plus the post-change files, so the pre-change half of what was cut goes unread.

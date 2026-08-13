@@ -1,17 +1,20 @@
 ---
 name: skill-review
-description: Use when reviewing or gating changes to Claude Code skills, agents, plugins, or marketplace repos — a pre-PR gate on prompt prose across three axes, drift (rules restated, pointers stale, no normative home), concurrency (procedures that serialize independent work, or fan out unsafely via subagents, workflows, or pipelines), and token usage (wrong model tier for a supervisor or worker, work a shipped script should do, prose billed on every trigger); reviewing a single SKILL.md, agent definition, or canon file on any axis; or auditing a whole plugin repo.
+description: Use when reviewing or gating changes to Claude Code skills, agents, plugins, or marketplace repos — a pre-PR gate on prompt prose across four axes, drift (rules restated, pointers stale, no normative home), concurrency (procedures that serialize independent work, or fan out unsafely via subagents, workflows, or pipelines), token usage (wrong model tier for a supervisor or worker, work a shipped script should do, prose billed on every trigger), and security (prompt-injection surface — untrusted content entering context unfenced or obeyed as instructions, capability or outward channels in reach of hostile input, secrets on wide channels); reviewing a single SKILL.md, agent definition, or canon file on any axis; or auditing a whole plugin repo.
 ---
 
-# Skill review — drift, concurrency, and token-usage gate for prompt prose
+# Skill review — drift, concurrency, token-usage, and security gate
 
-Instruction files fail in three ways code does not. A rule restated in
+Instruction files fail in four ways code does not. A rule restated in
 two places reads fine in both until one of them moves. A procedure
 that walks independent work one item at a time reads fine too — it
-just taxes every executor that follows it. And a procedure that spends
-a frontier model on what a script could do reads fine forever, because
-prose carries no price tag. This skill reviews skill, agent, and canon
-prose the way a maintainer reviews code, on three axes.
+just taxes every executor that follows it. A procedure that spends a
+frontier model on what a script could do reads fine forever, because
+prose carries no price tag. And a procedure that reads content an
+attacker can author, with capability that work never needed in reach,
+reads fine right up until the attacker writes it. This skill reviews
+skill, agent, and canon prose the way a maintainer reviews code, on
+four axes.
 
 ## Axes
 
@@ -24,11 +27,13 @@ skill's directory.
   `references/concurrency.md`
 - **token usage** — is every operation on the cheapest sufficient
   mechanism? → `references/token-usage.md`
+- **security** — can anything the procedure reads steer it, or reach
+  beyond it? → `references/security.md`
 
-A pre-PR gate or a repo-wide audit runs all three. A targeted request
+A pre-PR gate or a repo-wide audit runs all four. A targeted request
 loads one: "is this rule stated anywhere else?" is drift, "does this
 parallelize?" is concurrency, "is this wasting tokens?" is token
-usage.
+usage, "could a hostile issue body steer this?" is security.
 
 ## Shared review contract
 
@@ -41,11 +46,14 @@ Every axis runs under one contract:
   and read-only, dispatch them as ONE batch rather than a serial
   sweep, and pipeline each result into the next step. Gather only
   where the next step needs the whole set. Cap batch width at what
-  the harness runs concurrently; queue the rest.
+  the harness runs concurrently; queue the rest. Axes that
+  census artifacts share one: a single subagent per artifact returns
+  each loaded axis's inventory for it.
 - **Verify before reporting.** Re-read each candidate assuming the
   author was right — transport mappings, per-audience deltas, scoped
-  exceptions, deliberately serial work, and deliberately expensive
-  work are all legitimate. Report only survivors.
+  exceptions, deliberately serial work, deliberately expensive work,
+  and capability a named work requires are all legitimate. Report
+  only survivors.
 - **Anchor everything.** Every finding carries a full repo-relative
   `file:line`, as does every other site it names.
 - **One finding per site**, most specific type wins. A single bad step
@@ -56,13 +64,14 @@ Every axis runs under one contract:
 - **Report, never fix** — unless the user asks.
 - **Verdict: READY / NOT READY** + the must-fix list. Any finding on
   any axis blocks, and nothing else does. Anything you notice outside
-  the three axes belongs in a separate observations section that leaves
+  the four axes belongs in a separate observations section that leaves
   the verdict alone — a gate whose blocking set the reviewer can widen
   has no stopping condition.
-- **Scope: drift, concurrency, and token usage only** — how rules are
-  stated, how work is dispatched, and what it costs to run. This gate
-  does not judge meaning, triggering quality, or coverage; compose it
-  with a content reviewer to cover those properly.
+- **Scope: drift, concurrency, token usage, and security only** — how
+  rules are stated, how work is dispatched, what it costs to run, and
+  what its input can make it do. This gate does not judge meaning,
+  triggering quality, or coverage; compose it with a content reviewer
+  to cover those properly.
 
 ## Repo-wide audit
 

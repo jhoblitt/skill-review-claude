@@ -178,10 +178,16 @@ fires plugins/p/skills/s/references/drift.md
 fires agents/reviewer.md
 fires commands/review.md
 fires .claude-plugin/plugin.json
+fires hooks/hooks.json
+fires plugins/p/hooks/hooks.json
+fires .mcp.json
+fires plugins/p/.mcp.json
 
 silent references/axes/drift.md
 silent agents/team/reviewer.md
 silent references/schema.json
+silent hooks/team/extra.json
+silent mcp.json
 silent commands/review.sh
 silent README.md
 silent docs/specs/design.md
