@@ -4,9 +4,9 @@
 
 `plugins/skill-review/skills/skill-review/SKILL.md` owns the shared review
 contract — its bullets are the list, and this register does not keep a second
-copy of them. Each of the three axis rules lives in its own reference beside
+copy of them. Each of the four axis rules lives in its own reference beside
 its corollaries: `references/drift.md`, `references/concurrency.md`,
-`references/token-usage.md`.
+`references/token-usage.md`, `references/security.md`.
 
 Rationale stays with the rule it explains, wherever that rule lives.
 
@@ -24,7 +24,7 @@ and each rendering carries only what this table says:
 | --- | --- |
 | `README.md`, intro and axes table | the axis names, each rule in a line, what each catches, why these failures survive ordinary review, the modes, and the anchoring rule |
 | `README.md`, "Scope" section | the scope boundary, the verdict rule, and report-never-fix, stated as outcomes a user sees |
-| `plugins/skill-review/.claude-plugin/plugin.json`, `description` | the axis names, the three rule names, and the modes |
+| `plugins/skill-review/.claude-plugin/plugin.json`, `description` | the axis names, the four rule names, and the modes |
 | `.claude-plugin/marketplace.json`, both `description` fields | the axis names and the modes |
 | `plugins/skill-review/skills/skill-review/SKILL.md`, frontmatter `description` | the axis names, what each catches, and the modes |
 
