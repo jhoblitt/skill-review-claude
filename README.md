@@ -80,23 +80,32 @@ flowchart TD
     ask["review a single skill, agent,<br/>or canon file on request"] --> load
     audit["audit a whole repo"] --> load
 
-    load["load the axes the request calls for<br/>all four to gate or audit · one for a targeted question"]
-    load --> axes
+    load["the dispatcher loads the axes the request calls for<br/>all four to gate or audit · one for a targeted question"]
+    load --> fan
 
-    axes["drift · concurrency · token usage · security"]
-    axes --> verify
+    fan["dispatched in one message — one agent per loaded axis"]
+    fan --> drift["drift-review"]
+    fan --> conc["concurrency-review"]
+    fan --> tok["token-usage-review"]
+    fan --> sec["security-review"]
 
-    verify{"re-read each candidate<br/>assuming the author was right"}
+    drift --> verify
+    conc --> verify
+    tok --> verify
+    sec --> verify
+
+    verify{"each agent censuses its own axis, then re-reads<br/>every candidate assuming the author was right"}
     verify -->|"deliberate, scoped, or required"| drop["dropped, never reported"]
-    verify -->|"survives"| finding["finding, anchored to a<br/>repo-relative file:line"]
+    verify -->|"survives"| finding["finding block, anchored to a<br/>repo-relative file:line"]
 
-    drop --> verdict
-    finding --> verdict
-    verdict{"any finding, on any axis?"}
+    drop --> reconcile
+    finding --> reconcile
+    reconcile["the dispatcher reconciles the returns —<br/>no axis agent emits a verdict"]
+    reconcile --> verdict{"any finding, on any axis?"}
     verdict -->|"yes"| notready["NOT READY<br/>+ the must-fix list"]
     verdict -->|"no"| ready["READY"]
 
-    axes -.->|"noticed outside the four axes"| obs["observations — reported with<br/>either verdict, never blocking"]
+    reconcile -.->|"noticed outside the four axes"| obs["observations — re-emitted under<br/>one heading, never blocking"]
 ```
 
 ## Scope
