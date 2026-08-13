@@ -1,8 +1,9 @@
 # Axis 4 — security
 
 Runs under the shared review contract in `SKILL.md`, which owns modes,
-batching, verification, anchoring, one-finding-per-site,
-evidence-or-silence, the verdict, and the scope boundary.
+batching, per-axis dispatch, verification, anchoring,
+one-finding-per-site, evidence-or-silence, the verdict, and the scope
+boundary.
 
 This axis judges what a procedure's input can MAKE it do. What a
 mechanism costs belongs to `references/token-usage.md`; whether a
@@ -83,8 +84,8 @@ to drive. Corollaries:
 1. **Ingress-and-grant census**, in two passes so the cheap one bounds
    the dear one. First over the FULL text of each artifact and the
    frontmatter and manifests that arm it — `allowed-tools`, hook and
-   MCP configuration, permission prose. Censuses ride the shared
-   contract's one census batch, one subagent per artifact. List every
+   MCP configuration, permission prose. Dispatch the censuses as one
+   batch per the shared contract, one artifact each. List every
    point where content enters context (files read, pages fetched,
    issue and PR text, command output, subagent returns, the input a
    hook or command interpolates, and the metadata riding them) and
@@ -157,8 +158,7 @@ use requires).
 Where one site fills several bars, blast radius outranks steering —
 EXEC over EXFIL over LEAKPATH over OVERGRANT — and OBEYS over
 FORGEABLE over UNFENCED within it. On a line granting several tools,
-the site is the capability, not the line: two grants with two fixes
-are two findings.
+the site is the capability, not the line.
 
 ```text
 <file:line> — <step>: <TYPE>

@@ -103,14 +103,14 @@ a `hooks/*.json` or `.mcp.json` configuration.
 When it does fire, the review runs in a separate `claude -p` process holding
 five tools: `Read`, `Grep` and `Glob` to read your branch, `LSP` to navigate
 the code a plugin ships alongside its prose, and the subagent dispatch the
-axes fan their censuses out with. Everything else is denied by
-name — the shell, the file writers, the network, MCP, schedulers, worktrees,
-outward-facing messaging, and anything that would load more capability — and
-those denials are inherited by the subagents. So the review reads your branch
-rather than editing it, and nothing it starts outlives it. Your session
-receives the verdict rather than the whole review: `NOT READY` blocks the
-command and reports the findings; `READY` passes the command through, and
-hands on any observations the review filed.
+axes run in. Everything else is denied by name — the shell, the file writers,
+the network, MCP, schedulers, worktrees, outward-facing messaging, and
+anything that would load more capability — and those denials are inherited by
+the subagents. So the review reads your branch rather than editing it, and
+nothing it starts outlives it. Your session receives the verdict rather than
+the whole review: `NOT READY` blocks the command and reports the findings;
+`READY` passes the command through, and hands on any observations the review
+filed.
 
 The gate fails open. A missing `claude` or Go toolchain, a failed
 build, a timeout, an undiscoverable base branch, or any other surprise

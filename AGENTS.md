@@ -8,11 +8,17 @@ copy of them. Each of the four axis rules lives in its own reference beside
 its corollaries: `references/drift.md`, `references/concurrency.md`,
 `references/token-usage.md`, `references/security.md`.
 
+`plugins/skill-review/agents/*.md` carry no rules in their bodies. Each names
+the two files above that its axis runs under and nothing else, so prose there
+that explains an axis is a finding rather than a rendering. Their frontmatter
+is the one home for that agent's own tier and tool roster, and its
+`description` renders the axis under the table below.
+
 Rationale stays with the rule it explains, wherever that rule lives.
 
 ## Sanctioned audience renderings
 
-Five places re-explain some of that for a different audience instead of
+Six places re-explain some of that for a different audience instead of
 pointing at it. Under `references/drift.md`'s corollary that is a restatement,
 so this is a deliberate exception to the one-normative-home rule rather than an
 application of it: a marketplace listing cannot cite a contract at a reader who
@@ -27,6 +33,7 @@ and each rendering carries only what this table says:
 | `plugins/skill-review/.claude-plugin/plugin.json`, `description` | the axis names, the four rule names, and the modes |
 | `.claude-plugin/marketplace.json`, both `description` fields | the axis names and the modes |
 | `plugins/skill-review/skills/skill-review/SKILL.md`, frontmatter `description` | the axis names, what each catches, and the modes |
+| `plugins/skill-review/agents/*.md`, frontmatter `description` | the axis name, its rule in a line, and how the agent is dispatched |
 
 A rendering left behind when a rule it carries moves is DRIFTED, and it must be
 rewritten in the same change that moves the rule. A rendering that reaches past

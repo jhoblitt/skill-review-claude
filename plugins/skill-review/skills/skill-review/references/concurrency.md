@@ -1,8 +1,9 @@
 # Axis 2 — concurrency
 
 Runs under the shared review contract in `SKILL.md`, which owns modes,
-batching, verification, anchoring, one-finding-per-site,
-evidence-or-silence, the verdict, and the scope boundary.
+batching, per-axis dispatch, verification, anchoring,
+one-finding-per-site, evidence-or-silence, the verdict, and the scope
+boundary.
 
 This axis judges whether a shape is CORRECT for the dependencies. What
 that shape costs — orchestration weight, agent count, model tier,

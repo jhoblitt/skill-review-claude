@@ -23,10 +23,13 @@ const diffCapDefault = 3000
 // is untrusted instruction prose, so a tool that reaches the network or
 // outlives the process is the one that matters.
 //
-// Task stays granted because every axis fans its census out, and the denials
-// are inherited by those subagents — which is what makes permitting it safe. A
-// harness naming that tool something else still reaches it: only the names
-// below are removed.
+// Task stays granted because every axis runs in its own subagent, and the
+// denials are inherited by those subagents — which is what makes permitting it
+// safe. A harness naming that tool something else still reaches it: only the
+// names below are removed.
+//
+// The review process is denied a shell, which `drift-review` declares for
+// dupscan; references/drift.md owns what that axis does without one.
 //
 // LSP is granted because a plugin's prose and the code enforcing it live in
 // one repo, and the review reads both: the hook, the tools an axis cites, and
@@ -54,6 +57,14 @@ var (
 
 // reviewArgs is the full argv the review subprocess runs with, so the roster
 // above reaches it as one list rather than two literals at the call site.
+//
+// No --model, deliberately. This gate fails open, so any flag that can make
+// `claude -p` exit non-zero — a plan without the pinned tier, a deployment
+// naming models by full ID — would turn a configuration mismatch into a gate
+// that passes every prose PR silently and forever. --fallback-model covers an
+// overloaded model, not an unavailable one. The dispatcher inherits the
+// ambient tier, which is available by construction; the axis agents pin theirs
+// in frontmatter, where a bad value costs one agent rather than the gate.
 func reviewArgs() []string {
 	args := []string{"-p", "--permission-mode", "dontAsk", "--allowed-tools"}
 	args = append(args, allowedTools...)
@@ -157,14 +168,11 @@ type promptParams struct {
 // `--- END DIFF ---`, and it collides with git's own `---` header besides.
 const promptTemplate = `Gate this branch before its pull request opens.
 
-Read these five files first and follow them exactly. They are the contract;
-do not substitute your own review criteria.
+Read this file first and follow it exactly. It is the contract; do not
+substitute your own review criteria. It names an agent per axis, and each of
+those agents reads its own axis reference — you do not need them here.
 
   %[1]s/skills/skill-review/SKILL.md
-  %[1]s/skills/skill-review/references/drift.md
-  %[1]s/skills/skill-review/references/concurrency.md
-  %[1]s/skills/skill-review/references/token-usage.md
-  %[1]s/skills/skill-review/references/security.md
 
 Review this branch's change to the instruction prose it touches. You have no
 shell, though you may dispatch subagents, which inherit the same denials.
