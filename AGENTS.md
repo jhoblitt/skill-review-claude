@@ -12,7 +12,7 @@ Rationale stays with the rule it explains, wherever that rule lives.
 
 ## Sanctioned audience renderings
 
-Five places re-explain some of that for a different audience instead of
+Six places re-explain some of that for a different audience instead of
 pointing at it. Under `references/drift.md`'s corollary that is a restatement,
 so this is a deliberate exception to the one-normative-home rule rather than an
 application of it: a marketplace listing cannot cite a contract at a reader who
@@ -23,6 +23,7 @@ and each rendering carries only what this table says:
 | rendering | may carry |
 | --- | --- |
 | `README.md`, intro and axes table | the axis names, each rule in a line, what each catches, why these failures survive ordinary review, the modes, and the anchoring rule |
+| `README.md`, "How a review runs" diagram | the modes, the axis names, the verify-before-reporting step, the anchoring rule, and the verdict rule, as the shape of one pass |
 | `README.md`, "Scope" section | the scope boundary, the verdict rule, and report-never-fix, stated as outcomes a user sees |
 | `plugins/skill-review/.claude-plugin/plugin.json`, `description` | the axis names, the four rule names, and the modes |
 | `.claude-plugin/marketplace.json`, both `description` fields | the axis names and the modes |

@@ -70,6 +70,35 @@ index; it does not update the installed plugin.
 - "could a hostile issue body steer this skill?"
 - "what can this skill's input reach if it turns hostile?"
 
+## How a review runs
+
+All three modes converge on the same pass:
+
+```mermaid
+flowchart TD
+    gate["gate a branch or PR diff<br/>before it opens"] --> load
+    ask["review a single skill, agent,<br/>or canon file on request"] --> load
+    audit["audit a whole repo"] --> load
+
+    load["load the axes the request calls for<br/>all four to gate or audit · one for a targeted question"]
+    load --> axes
+
+    axes["drift · concurrency · token usage · security"]
+    axes --> verify
+
+    verify{"re-read each candidate<br/>assuming the author was right"}
+    verify -->|"deliberate, scoped, or required"| drop["dropped, never reported"]
+    verify -->|"survives"| finding["finding, anchored to a<br/>repo-relative file:line"]
+
+    drop --> verdict
+    finding --> verdict
+    verdict{"any finding, on any axis?"}
+    verdict -->|"yes"| notready["NOT READY<br/>+ the must-fix list"]
+    verdict -->|"no"| ready["READY"]
+
+    axes -.->|"noticed outside the four axes"| obs["observations — reported with<br/>either verdict, never blocking"]
+```
+
 ## Scope
 
 The gate reports drift, concurrency, token-usage, and security
