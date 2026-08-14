@@ -12,7 +12,7 @@ enforces one rule against one of them:
 | --- | --- | --- |
 | **drift** | every rule has exactly one normative statement; every other mention is a pointer to it | a rule restated in a second place, two renderings that have drifted apart, a pointer whose target moved, a rule with no normative home |
 | **concurrency** | a procedure's control flow matches the dependency structure of the work it describes | independent work walked one item at a time, subagents spread across turns so they run serially anyway, a collect-all barrier that earns nothing — and unsafe fan-out: parallel writers without isolation, order-dependent work, unbounded sets with no cap |
-| **token usage** | every operation runs on the cheapest mechanism that can do it correctly | a supervisor tiered below the decisions it must make, mechanical work on a frontier model, code the skill could ship but makes an agent rewrite, prose billed on every trigger that only some invocations need |
+| **token usage** | every operation runs on the cheapest mechanism that can do it correctly | a supervisor tiered below the decisions it must make, mechanical work on a frontier model, code the skill could ship but makes an agent rewrite, a run of tool calls one call could carry, prose billed on every trigger that only some invocations need |
 | **security** | content crossing a procedure's trust boundary carries no authority over what it does | untrusted content in a prompt unfenced or behind a forgeable fence, prose that obeys instructions inside it, a step reading hostile input with a shell or an outward channel in reach, untrusted content promoted to execution, secrets on wide channels |
 
 Every one of these reads fine on the page — a restatement fails only
