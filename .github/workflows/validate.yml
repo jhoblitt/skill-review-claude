@@ -52,6 +52,9 @@ jobs:
       - name: go test
         run: (cd plugins/skill-review/tools/dupscan && go test ./...)
 
+      - name: shellcheck
+        run: shellcheck .github/scripts/release-notes.sh
+
       - name: markdownlint
         run: npx --yes markdownlint-cli2@0.18.1
 
