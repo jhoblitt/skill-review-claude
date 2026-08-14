@@ -5,6 +5,6 @@ updates:
     schedule:
       interval: weekly
   - package-ecosystem: gomod
-    directory: /plugins/skill-review/hooks/pr-gate
+    directory: /plugins/skill-review/tools/dupscan
     schedule:
       interval: weekly

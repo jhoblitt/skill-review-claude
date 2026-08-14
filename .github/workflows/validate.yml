@@ -32,25 +32,16 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version-file: plugins/skill-review/hooks/pr-gate/go.mod
+          go-version-file: plugins/skill-review/tools/dupscan/go.mod
           cache: false
 
       - name: gofmt
         run: |
-          unformatted=$(gofmt -l plugins/skill-review/hooks/pr-gate plugins/skill-review/tools/dupscan)
+          unformatted=$(gofmt -l plugins/skill-review/tools/dupscan)
           [ -z "$unformatted" ] || { printf 'gofmt needed:\n%s\n' "$unformatted"; exit 1; }
 
       - name: go vet
-        run: |
-          for mod in plugins/skill-review/hooks/pr-gate plugins/skill-review/tools/dupscan; do
-            (cd "$mod" && go vet ./...)
-          done
-
-      - name: golangci-lint (pr-gate)
-        uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v9.3.0
-        with:
-          version: v2.12.2
-          working-directory: plugins/skill-review/hooks/pr-gate
+        run: (cd plugins/skill-review/tools/dupscan && go vet ./...)
 
       - name: golangci-lint (dupscan)
         uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v9.3.0
@@ -59,16 +50,7 @@ jobs:
           working-directory: plugins/skill-review/tools/dupscan
 
       - name: go test
-        run: |
-          for mod in plugins/skill-review/hooks/pr-gate plugins/skill-review/tools/dupscan; do
-            (cd "$mod" && go test ./...)
-          done
-
-      - name: shellcheck
-        run: shellcheck plugins/skill-review/hooks/pr-gate.sh tests/pr-gate-test.sh
-
-      - name: Test the PR gate hook
-        run: tests/pr-gate-test.sh
+        run: (cd plugins/skill-review/tools/dupscan && go test ./...)
 
       - name: markdownlint
         run: npx --yes markdownlint-cli2@0.18.1

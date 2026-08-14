@@ -1,6 +1,6 @@
 ---
 name: skill-review
-description: Use when reviewing or gating changes to Claude Code skills, agents, plugins, or marketplace repos — a pre-PR gate on prompt prose across four axes, drift (rules restated, pointers stale, no normative home), concurrency (procedures that serialize independent work, or fan out unsafely via subagents, workflows, or pipelines), token usage (wrong model tier for a supervisor or worker, work a shipped script should do, prose billed on every trigger), and security (prompt-injection surface — untrusted content entering context unfenced or obeyed as instructions, capability or outward channels in reach of hostile input, secrets on wide channels); reviewing a single SKILL.md, agent definition, or canon file on any axis; or auditing a whole plugin repo.
+description: Use when preparing to commit, push, or open a pull request (`gh pr create`) on a branch that changes Claude Code skills, agents, plugins, or marketplace repos, and when reviewing or gating such changes on request — a pre-PR gate on prompt prose across four axes, drift (rules restated, pointers stale, no normative home), concurrency (procedures that serialize independent work, or fan out unsafely via subagents, workflows, or pipelines), token usage (wrong model tier for a supervisor or worker, work a shipped script should do, prose billed on every trigger), and security (prompt-injection surface — untrusted content entering context unfenced or obeyed as instructions, capability or outward channels in reach of hostile input, secrets on wide channels); reviewing a single SKILL.md, agent definition, or canon file on any axis; or auditing a whole plugin repo.
 ---
 
 # Skill review — drift, concurrency, token-usage, and security gate
@@ -15,6 +15,15 @@ attacker can author, with capability that work never needed in reach,
 reads fine right up until the attacker writes it. This skill reviews
 skill, agent, and canon prose the way a maintainer reviews code, on
 four axes.
+
+## When to gate
+
+Nothing fires the gate for you. Run it unprompted as soon as a branch
+that touched instruction prose is headed for a commit, a push, or
+`gh pr create` — a `SKILL.md`, an agent, command, or `references/`
+file, a `CLAUDE.md` or `AGENTS.md`, or a plugin, marketplace, hook, or
+MCP manifest. The verdict is due before the pull request opens, not
+after.
 
 ## Axes
 
