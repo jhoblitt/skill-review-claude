@@ -1,35 +1,216 @@
 ## [1.1.2](https://github.com/jhoblitt/skill-review-claude/compare/v1.1.1...v1.1.2) (2026-08-14)
 
+### Documentation
+
+* name granularity in the skill's description ([f72778e](https://github.com/jhoblitt/skill-review-claude/commit/f72778ee07894215361d8b331a81b71caea2279c))
+
+
+## What's Changed
+* docs: name granularity in the skill's description by @jhoblitt in https://github.com/jhoblitt/skill-review-claude/pull/23
 ## [1.1.1](https://github.com/jhoblitt/skill-review-claude/compare/v1.1.0...v1.1.1) (2026-08-14)
 
+### Documentation
+
+* name granularity in the README's token-usage row ([72db23e](https://github.com/jhoblitt/skill-review-claude/commit/72db23e403e9b3368e9f9037d33ef1f625804b16))
+
+
+## What's Changed
+* docs: name granularity in the README's token-usage row by @jhoblitt in https://github.com/jhoblitt/skill-review-claude/pull/22
 ## [1.1.0](https://github.com/jhoblitt/skill-review-claude/compare/v1.0.0...v1.1.0) (2026-08-14)
 
+### Features
+
+* **token-usage:** flag tool calls that one call could carry ([0ecab98](https://github.com/jhoblitt/skill-review-claude/commit/0ecab98661a203736cad7e1ca46e6fa100e9dcf9)), closes [#16](https://github.com/jhoblitt/skill-review-claude/issues/16)
+
+
+## What's Changed
+* feat(token-usage): flag tool calls that one call could carry by @jhoblitt in https://github.com/jhoblitt/skill-review-claude/pull/21
+
+### Resolved issues
+
+* [#16](https://github.com/jhoblitt/skill-review-claude/issues/16) token usage axis should check for tool usage which could be removed
 ## [1.0.0](https://github.com/jhoblitt/skill-review-claude/compare/v0.10.1...v1.0.0) (2026-08-14)
 
+### ⚠ BREAKING CHANGES
+
+* the plugin no longer ships a PreToolUse hook. Nothing
+runs the gate automatically before `gh pr create`, and SKILL_REVIEW_GATE,
+SKILL_REVIEW_GATE_TIMEOUT and SKILL_REVIEW_GATE_DIFF_CAP no longer have
+any effect. Ask for the review in the session instead.
+
+### Features
+
+* drop the PreToolUse hook that gated `gh pr create` ([6e46c7e](https://github.com/jhoblitt/skill-review-claude/commit/6e46c7eb114247cee9c684027f4d550a5b706150))
+
+
+## What's Changed
+* feat!: drop the PreToolUse hook that gated `gh pr create` by @jhoblitt in https://github.com/jhoblitt/skill-review-claude/pull/20
 ## [0.10.1](https://github.com/jhoblitt/skill-review-claude/compare/v0.10.0...v0.10.1) (2026-08-13)
 
+### Documentation
+
+* redraw the review-pass diagram for the per-axis agents ([a5a877b](https://github.com/jhoblitt/skill-review-claude/commit/a5a877b9bb96eb7020177def15e60970d04a3351))
+
+
+## What's Changed
+* docs: redraw the review-pass diagram for the per-axis agents by @jhoblitt in https://github.com/jhoblitt/skill-review-claude/pull/19
 ## [0.10.0](https://github.com/jhoblitt/skill-review-claude/compare/v0.9.1...v0.10.0) (2026-08-13)
 
+### Features
+
+* run each review axis in its own subagent ([108f205](https://github.com/jhoblitt/skill-review-claude/commit/108f205767ca6354b412adbe55f283793403ab6f))
+
+
+## What's Changed
+* feat: run each review axis in its own subagent by @jhoblitt in https://github.com/jhoblitt/skill-review-claude/pull/17
 ## [0.9.1](https://github.com/jhoblitt/skill-review-claude/compare/v0.9.0...v0.9.1) (2026-08-13)
 
+### Documentation
+
+* diagram the shape of one review pass in the README ([5ee1e02](https://github.com/jhoblitt/skill-review-claude/commit/5ee1e026c988525446d208845f62e787aa29982b))
+
+
+## What's Changed
+* docs: diagram the shape of one review pass in the README by @jhoblitt in https://github.com/jhoblitt/skill-review-claude/pull/18
 ## [0.9.0](https://github.com/jhoblitt/skill-review-claude/compare/v0.8.1...v0.9.0) (2026-08-13)
 
+### Features
+
+* add a security review axis ([47437f1](https://github.com/jhoblitt/skill-review-claude/commit/47437f154c81e04e4bdb8f3ab17c072e41028892))
+
+
+## What's Changed
+* feat: add a security review axis by @jhoblitt in https://github.com/jhoblitt/skill-review-claude/pull/13
 ## [0.8.1](https://github.com/jhoblitt/skill-review-claude/compare/v0.8.0...v0.8.1) (2026-08-10)
 
+### Bug Fixes
+
+* confine the review subprocess to the four tools it needs ([3cdb5bc](https://github.com/jhoblitt/skill-review-claude/commit/3cdb5bcc000405f76e72c92bb32d3980710cd3e2))
+* let the review navigate the code a plugin ships ([9c534fd](https://github.com/jhoblitt/skill-review-claude/commit/9c534fdc6c4ef5c68813760d5de3d7c42cb399e1))
+
+
+## What's Changed
+* fix: confine the review subprocess to the tools it needs by @jhoblitt in https://github.com/jhoblitt/skill-review-claude/pull/12
 ## [0.8.0](https://github.com/jhoblitt/skill-review-claude/compare/v0.7.0...v0.8.0) (2026-08-07)
 
+### Features
+
+* **drift:** ship dupscan for the rendering hunt's mechanical stage ([f415463](https://github.com/jhoblitt/skill-review-claude/commit/f4154631cd870a89244bdffa2df8568d15e68413))
+
+
+## What's Changed
+* feat(drift): ship dupscan for the rendering hunt's mechanical stage by @jhoblitt in https://github.com/jhoblitt/skill-review-claude/pull/11
 ## [0.7.0](https://github.com/jhoblitt/skill-review-claude/compare/v0.6.0...v0.7.0) (2026-08-07)
 
+### Features
+
+* add the Go core of the PR gate ([b3f25cf](https://github.com/jhoblitt/skill-review-claude/commit/b3f25cfe21a3c77ee616e9b6661b4128dd296c04))
+* port the PR gate's orchestration to Go ([0a64063](https://github.com/jhoblitt/skill-review-claude/commit/0a6406315f34632223f84a0efdbec35f5e3e000b))
+* replace the bash gate with the Go binary and its launcher ([97b9c30](https://github.com/jhoblitt/skill-review-claude/commit/97b9c30beb95f673b575d065fe6bc42a8a2a840c))
+
+### Documentation
+
+* note the gate's Go toolchain requirement ([aaf7173](https://github.com/jhoblitt/skill-review-claude/commit/aaf71734af26b07e7a187d3bafbc49a19bacb0e7))
+* record the pr-gate Go conversion design ([6110dfe](https://github.com/jhoblitt/skill-review-claude/commit/6110dfe25e8a48c714a1b2ae844d500e2d1f32c7))
+* state the rebuild-on-update behavior the launcher actually has ([36cf63f](https://github.com/jhoblitt/skill-review-claude/commit/36cf63f48ad4addc859904cca5c7c66df87496e7))
+
+
+## What's Changed
+* feat: convert the PR gate hook to a Go binary built on first use by @jhoblitt in https://github.com/jhoblitt/skill-review-claude/pull/10
 ## [0.6.0](https://github.com/jhoblitt/skill-review-claude/compare/v0.5.2...v0.6.0) (2026-08-07)
 
+### Features
+
+* hand a passing review's observations to the session ([9e71d2e](https://github.com/jhoblitt/skill-review-claude/commit/9e71d2e2476d7346dd045a40ba9416633095679a))
+
+### Bug Fixes
+
+* close the verdict's blocking set ([7cf50a7](https://github.com/jhoblitt/skill-review-claude/commit/7cf50a772c7302a50e8baf8e979010925d7a382c))
+* confine the gate's review subprocess and harden what it reads ([4b09c3b](https://github.com/jhoblitt/skill-review-claude/commit/4b09c3bcd467d4ef78b61170a8e8314ebbb5a819))
+* make the homeless check reach the rules a review leans on ([9e7606c](https://github.com/jhoblitt/skill-review-claude/commit/9e7606cf72fa7c514627e233f7e39a652e8d88de))
+
+### Documentation
+
+* bring the audience renderings in line with the contract ([d0ef1fa](https://github.com/jhoblitt/skill-review-claude/commit/d0ef1faf4a3ab6e3cbaab82fcb3760574fc751fb))
+* cut the restated mechanics out of the design records ([ba1db43](https://github.com/jhoblitt/skill-review-claude/commit/ba1db43d98ccef67d79c7a44d5539c29dfc2ac8f))
+* register which files may re-explain the contract ([fa0ccf0](https://github.com/jhoblitt/skill-review-claude/commit/fa0ccf0cda7b0b995453891681dc5e02330a8221))
+
+
+## What's Changed
+* test: cover the PR gate hook, including its fire-set by @jhoblitt in https://github.com/jhoblitt/skill-review-claude/pull/8
+* fix: confine the review subprocess, and register what may re-explain the contract by @jhoblitt in https://github.com/jhoblitt/skill-review-claude/pull/9
 ## [0.5.2](https://github.com/jhoblitt/skill-review-claude/compare/v0.5.1...v0.5.2) (2026-08-06)
 
+### Bug Fixes
+
+* pipeline batched work instead of gathering by default ([1959d39](https://github.com/jhoblitt/skill-review-claude/commit/1959d39f7a705cc25b85844322dab2cf0f88b35a))
+
+### Documentation
+
+* correct the gate's fire-set and the concurrency spec's pointer ([7bc0403](https://github.com/jhoblitt/skill-review-claude/commit/7bc04030077aa103a6fe7fde34a497a2a64431ee))
+
+
+## What's Changed
+* ci: raise the commitlint job timeout to 10 minutes by @jhoblitt in https://github.com/jhoblitt/skill-review-claude/pull/6
+* fix: pipeline batched work, and correct two stale renderings by @jhoblitt in https://github.com/jhoblitt/skill-review-claude/pull/7
 ## [0.5.1](https://github.com/jhoblitt/skill-review-claude/compare/v0.5.0...v0.5.1) (2026-08-06)
 
+### Refactoring
+
+* name the axes after their reference files ([ea21a48](https://github.com/jhoblitt/skill-review-claude/commit/ea21a480649de97a993b22838de0a654f6af4dfd))
+
+### Documentation
+
+* render the review axes as a table in the README ([431e906](https://github.com/jhoblitt/skill-review-claude/commit/431e9064e9e29ed6e844f1298af622441e6e07a3))
+
+
+## What's Changed
+* docs: table for the review axes, named after their reference files by @jhoblitt in https://github.com/jhoblitt/skill-review-claude/pull/5
 ## [0.5.0](https://github.com/jhoblitt/skill-review-claude/compare/v0.4.0...v0.5.0) (2026-08-06)
 
+### Features
+
+* gate prose PRs with a PreToolUse hook ([12de117](https://github.com/jhoblitt/skill-review-claude/commit/12de117669adc788c4adb87173cb455b66c95de4))
+
+
+## What's Changed
+* feat: gate prose PRs with a PreToolUse hook by @jhoblitt in https://github.com/jhoblitt/skill-review-claude/pull/4
 ## [0.4.0](https://github.com/jhoblitt/skill-review-claude/compare/v0.3.0...v0.4.0) (2026-08-06)
 
+### Features
+
+* add the token usage review axis ([d84eb2f](https://github.com/jhoblitt/skill-review-claude/commit/d84eb2f892467caabec8f20030988873a6cc17ea))
+
+### Performance Improvements
+
+* split the rendering hunt's tiers ([43c7b5a](https://github.com/jhoblitt/skill-review-claude/commit/43c7b5a6d6c66326e46344c84fd7b2baf1759398))
+
+### Refactoring
+
+* split each axis into an on-demand reference ([1347f95](https://github.com/jhoblitt/skill-review-claude/commit/1347f95d2cf89694c635ce6980e4d6091619d7b3))
+
+
+## What's Changed
+* feat: add the token usage review axis by @jhoblitt in https://github.com/jhoblitt/skill-review-claude/pull/3
 ## [0.3.0](https://github.com/jhoblitt/skill-review-claude/compare/v0.2.0...v0.3.0) (2026-08-06)
 
+### Features
+
+* add the concurrency review axis ([40b8f7a](https://github.com/jhoblitt/skill-review-claude/commit/40b8f7aa07e7b1c758a68bfd7cdd6ab9542cd5c9))
+
+### Performance Improvements
+
+* batch the rendering hunt and the work-item census ([10755ae](https://github.com/jhoblitt/skill-review-claude/commit/10755ae05030e4da2d7480e7d045bc252afffd99))
+
+
+## What's Changed
+* feat: add the concurrency review axis by @jhoblitt in https://github.com/jhoblitt/skill-review-claude/pull/2
 ## [0.2.0](https://github.com/jhoblitt/skill-review-claude/compare/v0.1.0...v0.2.0) (2026-08-04)
+
+### Features
+
+* add the skill-review plugin ([4ec73f3](https://github.com/jhoblitt/skill-review-claude/commit/4ec73f396d036622fbfc08b93ea8890cb473d4e0))
+
+
+## What's Changed
+* feat: add the skill-review plugin by @jhoblitt in https://github.com/jhoblitt/skill-review-claude/pull/1
