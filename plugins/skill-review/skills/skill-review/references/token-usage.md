@@ -23,6 +23,10 @@ justified only by capability actually required. Corollaries:
 - Cost paid per invocation dominates cost paid per run. Prose resident
   in a skill's entry file is billed on every trigger, before any work
   happens; a wasteful step is billed only when reached.
+- A round trip is a unit of cost. Every tool call re-bills the context
+  it has accumulated, so a run of calls that one call could carry pays
+  for the split whether its steps are independent or strictly ordered.
+  Granularity is a cost question even where the serial shape is right.
 - Deterministic output belongs in code. If a machine can check the
   result, a model should not be generating it — and bulk data should
   reach the model already reduced, or not at all.
@@ -34,8 +38,8 @@ justified only by capability actually required. Corollaries:
 ## Procedure
 
 1. **Operation census** over the full text of each artifact: every
-   step that spends tokens — model calls, subagent dispatches, file
-   reads, data transformations — plus the artifact's own resident
+   step that spends tokens — model calls, subagent dispatches, tool
+   calls, data transformations — plus the artifact's own resident
    prose, which every trigger pays for. Dispatch the censuses as one
    batch per the shared contract, one artifact each.
 2. **Mechanism test** per operation: name the cheapest mechanism that
@@ -51,7 +55,11 @@ justified only by capability actually required. Corollaries:
    reduce outside it, and deterministic work handed to a model.
 5. **Footprint check**: content resident in the entry file that only
    some invocations need, and could load on demand instead.
-6. **Flow check**: what subagents are told to return, what they are
+6. **Granularity check**: runs of tool calls the artifact prescribes —
+   a command per file, a script per item, a read per path — where one
+   call carries the run and no step between them branches on what the
+   last returned.
+7. **Flow check**: what subagents are told to return, what they are
    told to read, and whether cheap gates precede the expensive work
    they could short-circuit.
 
@@ -76,7 +84,8 @@ some invocations need).
 Context economy: **VERBOSERET** (subagent return value unconstrained —
 prose where a schema would do, quoted blocks where an anchor would) ·
 **WIDEREAD** (whole-file reads where targeted reads suffice, or one
-context redundantly shipped to N agents).
+context redundantly shipped to N agents) · **CHATTY** (a run of tool
+calls where one call carries the whole run).
 
 Ordering: **LATEGATE** (a cheap check placed after the expensive work
 it could have short-circuited).
@@ -88,11 +97,14 @@ it).
 
 ```text
 <file:line> — <operation>: <TYPE>
-  mechanism now: <code | tool | small model | large model | prose>
-  mechanism wanted: <same vocabulary>
+  mechanism now: <code | tool | small model | large model | prose>[ ×N]
+  mechanism wanted: <same vocabulary>[ ×N]
   evidence: <this type's required evidence, below>
   fix: <one line>
 ```
+
+The `×N` count is carried only where a finding turns on how many calls
+an operation takes rather than which mechanism runs it.
 
 ### Required evidence
 
@@ -111,6 +123,8 @@ A finding whose evidence line cannot be filled in is not reported.
   it.
 - **VERBOSERET**, **WIDEREAD** — what is shipped that the consumer
   never reads.
+- **CHATTY** — the calls that combine into one, and what makes their
+  intermediate results unnecessary to inspect.
 - **LATEGATE** — the expensive work the cheap check short-circuits,
   and how often it would.
 - **UNTIERED** — the subtasks whose difficulty differs, and by what.

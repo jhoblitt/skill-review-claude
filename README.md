@@ -113,9 +113,10 @@ flowchart TD
 
 The gate reports drift, concurrency, token-usage, and security
 findings — restated, drifted, orphaned, and homeless rules; serialized
-or unsafe fan-out; operations running on a costlier mechanism than they
-need; and untrusted input that can steer the executor or reach
-capability its work never required. Anything it notices outside those
+or unsafe fan-out; work that costs more to run than it needs to, from
+model tier to call count to prose billed on every trigger; and
+untrusted input that can steer the executor or reach capability its
+work never required. Anything it notices outside those
 four lands in a separate observations section that leaves the verdict
 alone. It does not judge meaning, triggering quality, or coverage;
 compose it with a content reviewer to cover those properly. Findings
