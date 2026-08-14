@@ -41,6 +41,9 @@ rewritten in the same change that moves the rule. A rendering that reaches past
 its row is RESTATED. Extend the table in the same change that extends a
 rendering, or the next reviewer has to guess where the licence ends.
 
+The "may carry" column is a ceiling, not a quota: a rendering owes no item on
+its row.
+
 ## Design records
 
 `docs/specs/*.md` record how a decision was reached, on the date it was reached.
