@@ -1,3 +1,14 @@
+## [2.0.1](https://github.com/jhoblitt/skill-review-claude/compare/v2.0.0...v2.0.1) (2026-08-14)
+
+### Documentation
+
+* state that the register's may-carry column is a ceiling ([3fb619c](https://github.com/jhoblitt/skill-review-claude/commit/3fb619c7079cec628b607bbad889faa4aac786f8))
+
+
+## What's Changed
+* docs: state that the register's may-carry column is a ceiling by @jhoblitt in https://github.com/jhoblitt/skill-review-claude/pull/27
+* chore: drop the phantom incompatibility note from 2.0.0 by @jhoblitt in https://github.com/jhoblitt/skill-review-claude/pull/26
+
 ## [2.0.0](https://github.com/jhoblitt/skill-review-claude/compare/v1.1.2...v2.0.0) (2026-08-14)
 
 
